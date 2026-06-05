@@ -1224,7 +1224,7 @@
     const nextStepId = route[idx + 1];
     btn.textContent = nextStepId === 'price' ? 'See my price' : 'Continue';
     btn.style.display = state.step === 'price' ? 'none' : '';
-    $('btnBack').style.visibility = state.step === 'type' ? 'hidden' : 'visible';
+    $('btnBack').style.display = state.step === 'type' ? 'none' : 'inline-flex';
   }
 
   function showStep(stepId) {
