@@ -219,9 +219,47 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Missing required fields' });
   }
 
+  // Add to Klaviyo
+  async function syncToKlaviyo() {
+    if (!process.env.KLAVIYO_API_KEY) return;
+    const { vehicleStr, coverageStr, priceStr } = parseQuote(quote_summary, quote_breakdown);
+    const [firstName, ...rest] = (name || '').trim().split(' ');
+    try {
+      await fetch('https://a.klaviyo.com/api/profiles/', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Klaviyo-API-Key ${process.env.KLAVIYO_API_KEY}`,
+          'Content-Type': 'application/json',
+          'revision': '2024-02-15',
+        },
+        body: JSON.stringify({
+          data: {
+            type: 'profile',
+            attributes: {
+              email,
+              first_name: firstName || '',
+              last_name: rest.join(' ') || '',
+              phone_number: phone || undefined,
+              properties: {
+                vehicle: vehicleStr,
+                coverage: coverageStr,
+                quote_range: priceStr,
+                contact_preference: contact_pref,
+                source: 'iWrap NY Quote Calculator',
+              },
+            },
+          },
+        }),
+      });
+    } catch (e) {
+      console.error('Klaviyo sync error:', e);
+    }
+  }
+
   try {
-    // Send both emails in parallel
+    // Send emails + sync to Klaviyo in parallel
     await Promise.all([
+      syncToKlaviyo(),
       // 1. Business notification to iWrap NY
       resend.emails.send({
         from: 'iWrap NY Quotes <contactus@iwrapny.com>',
