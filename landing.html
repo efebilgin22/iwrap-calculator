@@ -74,8 +74,13 @@
   }
   .hero-bg-bottom {
     position: absolute; bottom: 0; left: 0; right: 0; height: 50%;
-    background: url('mosaic.webp') center center / cover no-repeat;
+    background: url('mosaic.webp') 0 center / auto 100% repeat-x;
     z-index: 0;
+    animation: scrollMosaic 30s linear infinite;
+  }
+  @keyframes scrollMosaic {
+    from { background-position: 0 center; }
+    to { background-position: -2000px center; }
   }
   .hero-bg-top::after, .hero-bg-bottom::after {
     content: '';
