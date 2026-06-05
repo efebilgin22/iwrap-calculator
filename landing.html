@@ -205,6 +205,48 @@
   .why-title { font-size: 1rem; font-weight: 800; color: var(--ink); margin-bottom: 0.4rem; }
   .why-desc { font-size: 0.88rem; color: var(--muted); line-height: 1.6; }
 
+  /* ── PROCESS ── */
+  .process-bg { background: #fff; }
+  .process-timeline { position: relative; max-width: 780px; margin: 0 auto 2.5rem; padding: 0 40px; }
+  .process-line {
+    position: absolute; top: 14px; left: 40px; right: 40px; height: 2px;
+    background: var(--border);
+  }
+  .process-dots {
+    display: flex; justify-content: space-between; position: relative;
+  }
+  .process-dot {
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+  }
+  .process-dot::before {
+    content: ''; width: 14px; height: 14px; border-radius: 50%;
+    background: var(--brand); border: 3px solid #fff;
+    box-shadow: 0 0 0 2px var(--brand);
+    display: block;
+  }
+  .process-dot span {
+    font-size: 0.78rem; font-weight: 700; color: var(--brand);
+    background: rgba(242,112,36,0.1); padding: 0.2rem 0.6rem;
+    border-radius: 20px; white-space: nowrap;
+  }
+  .process-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+  .process-card {
+    background: #fff; border-radius: 16px;
+    border: 1.5px solid var(--border); overflow: hidden;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .process-card:hover { border-color: var(--brand); box-shadow: 0 6px 24px rgba(242,112,36,0.12); }
+  .process-photo { height: 220px; overflow: hidden; }
+  .process-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .process-body { padding: 1.3rem 1.4rem 1.5rem; }
+  .process-step { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--brand); margin-bottom: 0.4rem; }
+  .process-title { font-size: 1.2rem; font-weight: 900; color: var(--ink); margin-bottom: 0.5rem; letter-spacing: -0.01em; }
+  .process-desc { font-size: 0.9rem; color: var(--muted); line-height: 1.6; }
+
   /* ── REVIEWS ── */
   .reviews-bg { background: var(--ink); }
   .reviews-bg .section-title { color: #fff; }
@@ -402,6 +444,61 @@
         <div class="why-icon">🚐</div>
         <div class="why-title">Fleet Specialists</div>
         <div class="why-desc">Running multiple vehicles? We offer fleet pricing and can turn around a whole fleet with consistent branding across every van.</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section class="process-bg">
+  <div class="section-inner">
+    <div class="section-eyebrow" style="text-align:center;">How It Works</div>
+    <h2 class="section-title" style="text-align:center;">Our Process</h2>
+    <p class="section-sub" style="text-align:center;margin-left:auto;margin-right:auto;">From first idea to finished install, we handle everything in-house.</p>
+
+    <div class="process-timeline">
+      <div class="process-line"></div>
+      <div class="process-dots">
+        <div class="process-dot"><span>Day 1</span></div>
+        <div class="process-dot"><span>Day 3</span></div>
+        <div class="process-dot"><span>Day 5</span></div>
+      </div>
+    </div>
+
+    <div class="process-grid">
+
+      <div class="process-card">
+        <div class="process-photo">
+          <img src="design.webp" alt="Design process" />
+        </div>
+        <div class="process-body">
+          <div class="process-step">Step One</div>
+          <div class="process-title">Design</div>
+          <div class="process-desc">We create a custom wrap design based on your business, vehicle, logo, branding and goals.</div>
+        </div>
+      </div>
+
+      <div class="process-card">
+        <div class="process-photo">
+          <img src="print.webp" alt="Printing process" />
+        </div>
+        <div class="process-body">
+          <div class="process-step">Step Two</div>
+          <div class="process-title">Printing</div>
+          <div class="process-desc">Once approved, your graphics are printed in-house with our latest technology printers using high-quality wrap materials.</div>
+        </div>
+      </div>
+
+      <div class="process-card">
+        <div class="process-photo">
+          <img src="install.webp" alt="Installation process" />
+        </div>
+        <div class="process-body">
+          <div class="process-step">Step Three</div>
+          <div class="process-title">Installation</div>
+          <div class="process-desc">Your wrap is installed by our experienced certified installers for a clean, seamless finished look.</div>
+        </div>
       </div>
 
     </div>
