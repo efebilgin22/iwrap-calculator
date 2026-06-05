@@ -61,17 +61,26 @@
 
   /* ── HERO ── */
   .hero {
-    background: url('header_image.webp') center top / 100% auto no-repeat, url('mosaic.webp') center center / cover no-repeat;
+    background: none;
     padding: 5rem 1.5rem 5.5rem;
     text-align: center;
     position: relative;
     overflow: hidden;
   }
-  .hero::before {
+  .hero-bg-top {
+    position: absolute; top: 0; left: 0; right: 0; height: 50%;
+    background: url('header_image.webp') center center / cover no-repeat;
+    z-index: 0;
+  }
+  .hero-bg-bottom {
+    position: absolute; bottom: 0; left: 0; right: 0; height: 50%;
+    background: url('mosaic.webp') center center / cover no-repeat;
+    z-index: 0;
+  }
+  .hero-bg-top::after, .hero-bg-bottom::after {
     content: '';
     position: absolute; inset: 0;
     background: rgba(0,0,0,0.20);
-    pointer-events: none; z-index: 0;
   }
   .hero > * { position: relative; z-index: 1; }
   .hero-eyebrow {
@@ -335,6 +344,8 @@
 
 <!-- HERO -->
 <section class="hero" id="hero">
+  <div class="hero-bg-top"></div>
+  <div class="hero-bg-bottom"></div>
   <div class="hero-eyebrow">Long Island's Commercial Wrap Specialists</div>
   <h1>Turn Your Vehicle Into a <em>Rolling Billboard</em></h1>
   <p class="hero-sub">
