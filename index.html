@@ -491,6 +491,7 @@
   const LETTERING_HIGH = 1499;
   const LOGO_FEES = { vector: 0, raster: 100, none: 250 };
   const PARTIAL_MULT = 0.5;
+  const TAX_RATE = 0.0875; // NYS sales tax 8.75%
 
   // Routes: defines step order per quote type
   const ROUTES = {
@@ -1149,10 +1150,16 @@
     if (p.logoFee > 0)    rows.push(`<div class="row"><span>${p.logoLabel}</span><span>+${fmtMoney(p.logoFee)}</span></div>`);
     if (p.logoSvcFee > 0) rows.push(`<div class="row"><span>${p.logoSvcLabel}</span><span>+${fmtMoney(p.logoSvcFee)}</span></div>`);
     if (p.windowLow > 0)  rows.push(`<div class="row"><span>Perforated window wraps</span><span>+${fmtMoney(p.windowLow)}–${fmtMoney(p.windowHigh)}</span></div>`);
-    rows.push(`<div class="row total"><span>Total estimate</span><span>${fmtMoney(p.low)}–${fmtMoney(p.high)}</span></div>`);
+    rows.push(`<div class="row subtotal"><span>Subtotal</span><span>${fmtMoney(p.low)}–${fmtMoney(p.high)}</span></div>`);
+    const taxLow = p.low * TAX_RATE;
+    const taxHigh = p.high * TAX_RATE;
+    rows.push(`<div class="row"><span>NYS Sales Tax (8.75%)</span><span>${fmtMoney(taxLow)}–${fmtMoney(taxHigh)}</span></div>`);
+    const totalLow = p.low + taxLow;
+    const totalHigh = p.high + taxHigh;
+    rows.push(`<div class="row total"><span>Total estimate</span><span>${fmtMoney(totalLow)}–${fmtMoney(totalHigh)}</span></div>`);
     $('breakdown').innerHTML = rows.join('');
 
-    $('quoteSummary').value = `${p.vehicleLine} — ${p.baseLabel} — ${fmtMoney(p.low)}–${fmtMoney(p.high)}`;
+    $('quoteSummary').value = `${p.vehicleLine} — ${p.baseLabel} — ${fmtMoney(totalLow)}–${fmtMoney(totalHigh)}`;
     $('quoteBreakdown').value = rows.map(r => r.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim()).join(' | ');
   }
 
