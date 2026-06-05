@@ -1,0 +1,1346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Commercial Vehicle Wrap Quote — iWrap NY</title>
+<style>
+  :root {
+    --brand: #f27024;
+    --brand-dark: #d65a18;
+    --brand-soft: #fde2cf;
+    --ink: #0f172a;
+    --ink-2: #1e293b;
+    --bg: #f4f5f7;
+    --card: #ffffff;
+    --border: #e5e7eb;
+    --border-strong: #cbd5e1;
+    --text: #0f172a;
+    --muted: #64748b;
+    --muted-2: #94a3b8;
+    --success: #16a34a;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .progress-track { height: 4px; background: var(--border); width: 100%; }
+  .progress-fill { height: 100%; background: var(--brand); width: 0%; transition: width 0.3s ease; }
+
+  .wizard { max-width: 1080px; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+
+  .site-logo { display: block; width: 140px; margin: 0 auto 1.25rem; }
+
+  .step-header { text-align: center; margin-bottom: 1.75rem; }
+  .step-label {
+    color: var(--brand);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+  .step-title {
+    font-size: clamp(1.6rem, 4vw, 2.4rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    margin-bottom: 0.5rem;
+  }
+  .step-subtitle { color: var(--muted); font-size: 0.98rem; max-width: 560px; margin: 0 auto; }
+
+  /* ---- Type selection cards ---- */
+  .type-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  .type-card {
+    background: var(--card);
+    border: 2px solid var(--border);
+    border-radius: 14px;
+    padding: 1.3rem 1.5rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    transition: border-color 0.12s, transform 0.05s;
+  }
+  .type-card:hover { border-color: var(--border-strong); }
+  .type-card:active { transform: scale(0.99); }
+  .type-card.active { border-color: var(--ink); box-shadow: 0 0 0 1px var(--ink); }
+  .type-icon { font-size: 2rem; flex-shrink: 0; }
+  .type-card .type-name { font-weight: 800; font-size: 1.05rem; color: var(--ink); margin-bottom: 0.2rem; }
+  .type-card .type-desc { font-size: 0.88rem; color: var(--muted); }
+
+  /* ---- Dimension inputs ---- */
+  .dim-note {
+    margin-top: 1rem;
+    padding: 0.75rem 1rem;
+    background: var(--brand-soft);
+    border-radius: 8px;
+    font-size: 0.85rem;
+    color: var(--ink);
+    line-height: 1.5;
+  }
+
+  /* ---- Form card ---- */
+  .form-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.6rem;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  .field { margin-bottom: 1.1rem; }
+  .field:last-child { margin-bottom: 0; }
+  .field label { display: block; font-size: 0.9rem; font-weight: 600; color: var(--ink); margin-bottom: 0.35rem; }
+  .field label .optional { color: var(--muted-2); font-weight: 400; font-size: 0.85rem; margin-left: 0.3rem; }
+  select, input[type="text"], input[type="email"], input[type="tel"], input[type="number"] {
+    width: 100%;
+    background: var(--bg);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0.85rem 1rem;
+    font-size: 0.95rem;
+    font-family: inherit;
+    appearance: none;
+  }
+  select { background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8'><path fill='%2364748b' d='M6 8L0 0h12z'/></svg>"); background-repeat: no-repeat; background-position: right 1rem center; padding-right: 2.5rem; }
+  select:focus, input:focus { outline: none; border-color: var(--ink); }
+  select:disabled { opacity: 0.5; cursor: not-allowed; background-color: #f1f5f9; }
+  input::placeholder { color: var(--muted-2); }
+
+  /* ---- Tier tabs + cards ---- */
+  .tier-tabs { display: flex; justify-content: center; gap: 0.5rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+  .tier-tab {
+    background: var(--card); border: 1px solid var(--border); border-radius: 999px;
+    padding: 0.55rem 1.2rem; font-size: 0.92rem; font-weight: 600; cursor: pointer; font-family: inherit;
+    display: inline-flex; align-items: center; gap: 0.35rem;
+  }
+  .tier-tab .dollars { color: var(--brand); font-weight: 700; }
+  .tier-tab.active { background: var(--ink-2); color: white; border-color: var(--ink-2); }
+  .tier-tab.active .dollars { color: var(--brand); }
+
+  .tier-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+  @media (max-width: 900px) { .tier-grid { grid-template-columns: 1fr; } }
+
+  .tier-card { background: var(--card); border: 2px solid var(--border); border-radius: 14px; padding: 1rem; cursor: pointer; transition: border-color 0.12s; }
+  .tier-card:hover { border-color: var(--border-strong); }
+  .tier-card.active { border-color: var(--ink); box-shadow: 0 0 0 1px var(--ink); }
+  .tier-photo { aspect-ratio: 16 / 10; background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%); border: 1px dashed var(--border-strong); border-radius: 10px; margin-bottom: 0.85rem; display: flex; align-items: center; justify-content: center; color: var(--muted-2); font-size: 0.8rem; text-align: center; padding: 0.5rem; }
+  .tier-card.active .tier-photo { border-style: solid; }
+  .tier-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.5rem; gap: 0.5rem; flex-wrap: wrap; }
+  .tier-name { font-size: 1.1rem; font-weight: 800; color: var(--ink); }
+  .tier-starting { font-size: 0.85rem; color: var(--muted); }
+  .tier-starting strong { color: var(--ink); font-weight: 700; }
+  .tier-thumbs { margin-top: 0.6rem; margin-bottom: 0.85rem; }
+  .tier-thumbs-label { color: var(--muted); font-size: 0.78rem; margin-bottom: 0.4rem; }
+  .tier-thumbs-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.35rem; }
+  .tier-thumb { aspect-ratio: 1; background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%); border: 1px dashed var(--border-strong); border-radius: 6px; }
+  .tier-included { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 0.7rem 0.85rem; font-size: 0.88rem; color: var(--ink); margin-bottom: 0.55rem; display: flex; align-items: center; gap: 0.45rem; }
+  .tier-tagline { background: var(--brand-soft); border-radius: 8px; padding: 0.65rem 0.85rem; font-size: 0.85rem; color: var(--ink); }
+  .tier-included .checkmark { color: var(--success); font-weight: 700; }
+
+  /* ---- Option cards (design step) ---- */
+  .option-grid { max-width: 660px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+  .option-grid.three { grid-template-columns: 1fr 1fr 1fr; }
+  @media (max-width: 720px) { .option-grid, .option-grid.three { grid-template-columns: 1fr; } }
+  .option-card { background: var(--card); border: 2px solid var(--border); border-radius: 12px; padding: 1rem; cursor: pointer; transition: border-color 0.12s; }
+  .option-card:hover { border-color: var(--border-strong); }
+  .option-card.active { border-color: var(--ink); box-shadow: 0 0 0 1px var(--ink); }
+  .option-card .name { font-weight: 700; color: var(--ink); margin-bottom: 0.25rem; }
+  .option-card .desc { font-size: 0.85rem; color: var(--muted); line-height: 1.4; }
+
+  .info-banner { max-width: 660px; margin: 1rem auto 0; background: var(--brand-soft); border-radius: 8px; padding: 0.7rem 0.95rem; font-size: 0.85rem; color: var(--ink); line-height: 1.45; }
+  .info-banner strong { color: var(--ink); }
+  .info-banner em { font-style: normal; font-weight: 700; }
+
+  /* ---- Logo services (design step for non-vehicle paths) ---- */
+  .logo-services-block {
+    max-width: 660px;
+    margin: 1rem auto 0;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1rem 1.25rem;
+  }
+  .logo-services-block .ls-title { font-weight: 700; color: var(--ink); margin-bottom: 0.25rem; }
+  .logo-services-block .ls-desc { font-size: 0.85rem; color: var(--muted); margin-bottom: 0.75rem; line-height: 1.45; }
+  .logo-service-btns { display: flex; flex-direction: row; flex-wrap: wrap; gap: 0.4rem; }
+  .ls-btn {
+    background: var(--bg); border: 1.5px solid var(--border); border-radius: 8px;
+    padding: 0.45rem 0.85rem; font-size: 0.85rem; font-weight: 600; color: var(--muted);
+    cursor: pointer; font-family: inherit; transition: all 0.12s;
+  }
+  .ls-btn:hover { border-color: var(--border-strong); color: var(--ink); }
+  .ls-btn.active { background: var(--ink); color: white; border-color: var(--ink); }
+
+  /* ---- Add-ons ---- */
+  .addon-list { max-width: 660px; margin: 0 auto; display: flex; flex-direction: column; gap: 0.6rem; }
+  .addon-row { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 0.95rem 1.1rem; display: grid; grid-template-columns: 48px 1fr auto; align-items: center; gap: 0.9rem; }
+  .addon-icon { width: 48px; height: 48px; border-radius: 10px; background: var(--brand-soft); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
+  .addon-text .name { font-weight: 700; font-size: 0.98rem; color: var(--ink); }
+  .addon-text .desc { font-size: 0.85rem; color: var(--muted); margin-top: 0.1rem; }
+  .addon-side { text-align: right; }
+  .addon-side .price { font-size: 0.82rem; color: var(--muted); margin-top: 0.3rem; }
+  .addon-locked { font-size: 0.78rem; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+
+  .toggle-sw { position: relative; display: inline-block; width: 44px; height: 26px; cursor: pointer; }
+  .toggle-sw input { opacity: 0; width: 0; height: 0; }
+  .toggle-sw .slider { position: absolute; inset: 0; background: var(--border-strong); border-radius: 999px; transition: 0.18s; }
+  .toggle-sw .slider::before { content: ''; position: absolute; height: 20px; width: 20px; left: 3px; top: 3px; background: white; border-radius: 50%; transition: 0.18s; box-shadow: 0 1px 2px rgba(0,0,0,0.2); }
+  .toggle-sw input:checked + .slider { background: var(--ink); }
+  .toggle-sw input:checked + .slider::before { transform: translateX(18px); }
+  .toggle-sw input:disabled + .slider { opacity: 0.6; cursor: not-allowed; }
+
+  /* ---- Addon logo service buttons ---- */
+  .logo-service-btns-v { display: flex; flex-direction: column; gap: 0.35rem; align-items: flex-end; }
+  .ls-btn-sm {
+    background: var(--bg); border: 1.5px solid var(--border); border-radius: 8px;
+    padding: 0.4rem 0.8rem; font-size: 0.82rem; font-weight: 600; color: var(--muted);
+    cursor: pointer; font-family: inherit; white-space: nowrap; transition: all 0.12s;
+  }
+  .ls-btn-sm:hover { border-color: var(--border-strong); color: var(--ink); }
+  .ls-btn-sm.active { background: var(--ink); color: white; border-color: var(--ink); }
+
+  /* ---- Price reveal ---- */
+  .price-reveal { background: var(--card); border: 2px solid var(--ink); border-radius: 14px; padding: 1.75rem 1.5rem; text-align: center; max-width: 600px; margin: 0 auto 1.25rem; }
+  .price-reveal .vehicle-line { font-size: 0.92rem; color: var(--muted); margin-bottom: 0.6rem; }
+  .price-reveal .price-range { font-size: clamp(2.2rem, 6vw, 3.2rem); font-weight: 800; letter-spacing: -0.02em; color: var(--ink); margin-bottom: 0.4rem; }
+  .price-reveal .price-range .sep { color: var(--muted-2); margin: 0 0.4rem; font-weight: 400; }
+  .price-reveal .price-note { color: var(--muted); font-size: 0.87rem; }
+
+  .breakdown { max-width: 600px; margin: 0 auto 1.25rem; background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 1.1rem 1.25rem; font-size: 0.9rem; }
+  .breakdown .row { display: flex; justify-content: space-between; color: var(--muted); padding: 0.32rem 0; }
+  .breakdown .row.total { border-top: 1px solid var(--border); margin-top: 0.4rem; padding-top: 0.55rem; color: var(--ink); font-weight: 700; }
+
+  /* ---- Lead form ---- */
+  .lead-form { max-width: 600px; margin: 0 auto; background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 1.4rem; display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem; }
+  .lead-form .full { grid-column: 1 / -1; }
+  @media (max-width: 600px) { .lead-form { grid-template-columns: 1fr; } }
+  .lead-form h3 { font-size: 1.05rem; font-weight: 700; color: var(--ink); margin-bottom: 0.5rem; }
+  .marketing-consent { display: flex; align-items: flex-start; gap: 0.6rem; cursor: pointer; }
+  .marketing-consent input[type="checkbox"] { margin-top: 3px; accent-color: var(--brand); width: 15px; height: 15px; flex-shrink: 0; cursor: pointer; }
+  .marketing-consent span { font-size: 0.8rem; color: var(--muted); line-height: 1.5; }
+
+  .contact-pref-label { font-size: 0.9rem; font-weight: 600; color: var(--ink); margin-bottom: 0.5rem; }
+  .contact-pref-options { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .pref-option { cursor: pointer; }
+  .pref-option input[type="radio"] { display: none; }
+  .pref-btn { display: inline-block; background: var(--bg); border: 1.5px solid var(--border); border-radius: 8px; padding: 0.55rem 1rem; font-size: 0.9rem; font-weight: 600; color: var(--ink); transition: all 0.12s; white-space: nowrap; }
+  .pref-option input[type="radio"]:checked + .pref-btn { background: var(--ink); color: white; border-color: var(--ink); }
+  .pref-option:hover .pref-btn { border-color: var(--border-strong); }
+
+  /* ---- Nav buttons ---- */
+  .step-actions { max-width: 720px; margin: 2rem auto 0; display: flex; justify-content: center; gap: 0.75rem; }
+  .btn { border-radius: 999px; padding: 0.95rem 2.2rem; font-size: 1rem; font-weight: 700; cursor: pointer; font-family: inherit; border: none; transition: background 0.12s, transform 0.05s; }
+  .btn-primary { background: var(--brand); color: white; min-width: 200px; }
+  .btn-primary:hover:not(:disabled) { background: var(--brand-dark); }
+  .btn-primary:active { transform: scale(0.99); }
+  .btn-primary:disabled { background: var(--brand-soft); color: var(--muted-2); cursor: not-allowed; }
+  .btn-back { background: transparent; color: var(--muted); border: 1px solid transparent; padding: 0.95rem 1.4rem; }
+  .btn-back:hover { color: var(--ink); }
+
+  /* ---- Success ---- */
+  .success-screen { text-align: center; padding: 3rem 1rem; max-width: 540px; margin: 0 auto; }
+  .success-logo { width: 160px; height: auto; margin: 0 auto 1.5rem; display: block; }
+  .success-screen .check { width: 64px; height: 64px; border-radius: 50%; background: var(--success); color: white; font-size: 2rem; line-height: 64px; margin: 0 auto 1.1rem; }
+  .success-screen h2 { font-size: 1.6rem; color: var(--ink); margin-bottom: 0.5rem; }
+  .success-screen p { color: var(--muted); }
+  .call-btn {
+    display: inline-flex; flex-direction: column; align-items: center; gap: 0.2rem;
+    background: var(--brand); color: #fff; text-decoration: none;
+    border-radius: 14px; padding: 1rem 2rem; margin: 1.5rem auto 0.75rem;
+    font-weight: 700; transition: background 0.15s, transform 0.08s;
+    box-shadow: 0 4px 16px rgba(242,112,36,0.30);
+  }
+  .call-btn:hover { background: var(--brand-dark); }
+  .call-btn:active { transform: scale(0.98); }
+  .call-icon { font-size: 1.5rem; margin-bottom: 0.1rem; }
+  .call-btn > span.call-number { font-size: 1.15rem; font-weight: 800; letter-spacing: 0.01em; }
+  .call-btn > span.call-icon { font-size: 1.4rem; }
+  .call-hint { font-size: 0.88rem; color: var(--muted-2); margin-top: 0.25rem; }
+  .done-links { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 1.25rem; }
+  .done-link { font-size: 0.9rem; color: var(--muted); text-decoration: none; }
+  .done-link:hover { color: var(--brand); }
+
+  .footer-note { text-align: center; color: var(--muted-2); font-size: 0.82rem; margin-top: 2.5rem; line-height: 1.5; }
+  .footer-note a { color: var(--brand); text-decoration: none; }
+  .footer-note a:hover { text-decoration: underline; }
+
+  /* ---- Unit selector (ft / in) ---- */
+  .unit-row { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 1.25rem; padding-bottom: 1.25rem; border-bottom: 1px solid var(--border); }
+  .unit-label { font-size: 0.9rem; font-weight: 600; color: var(--ink); }
+  .unit-btns { display: flex; gap: 0.4rem; }
+  .unit-btn { background: var(--bg); border: 1.5px solid var(--border); border-radius: 8px; padding: 0.45rem 0.9rem; font-size: 0.88rem; font-weight: 600; color: var(--muted); cursor: pointer; font-family: inherit; transition: all 0.12s; }
+  .unit-btn.active { background: var(--ink); color: white; border-color: var(--ink); }
+
+  /* ---- Panel section (box truck) ---- */
+  .panel-section { margin-bottom: 1.1rem; }
+  .panel-section-header { display: flex; align-items: baseline; gap: 0.5rem; margin-bottom: 0.5rem; }
+  .panel-section-label { font-size: 0.92rem; font-weight: 700; color: var(--ink); }
+  .panel-note { font-size: 0.8rem; color: var(--muted); font-weight: 400; }
+  .panel-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+
+  /* ---- Front panel toggle (box truck) ---- */
+  .front-toggle { margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+  .front-label { font-size: 0.9rem; font-weight: 600; color: var(--ink); margin-bottom: 0.5rem; }
+  .front-btns { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .ft-btn { background: var(--bg); border: 1.5px solid var(--border); border-radius: 8px; padding: 0.55rem 1rem; font-size: 0.88rem; font-weight: 600; color: var(--muted); cursor: pointer; font-family: inherit; transition: all 0.12s; }
+  .ft-btn.active { background: var(--ink); color: white; border-color: var(--ink); }
+
+  /* ---- Storefront multiple surfaces ---- */
+  .surface-item { margin-bottom: 1.25rem; padding-bottom: 1.25rem; border-bottom: 1px solid var(--border); }
+  .surface-item:last-of-type { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .surface-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem; }
+  .surface-label { font-weight: 700; font-size: 0.92rem; color: var(--ink); }
+  .surface-delete { background: none; border: none; color: var(--muted-2); font-size: 0.82rem; font-weight: 600; cursor: pointer; padding: 0.2rem 0.5rem; border-radius: 6px; font-family: inherit; transition: color 0.12s; }
+  .surface-delete:hover { color: #dc2626; }
+  .surface-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+  .add-surface-btn { width: 100%; margin-top: 1rem; background: var(--bg); border: 1.5px dashed var(--border-strong); border-radius: 10px; padding: 0.75rem; font-size: 0.9rem; font-weight: 600; color: var(--muted); cursor: pointer; font-family: inherit; transition: all 0.12s; }
+  .add-surface-btn:hover { border-color: var(--brand); color: var(--brand); }
+
+  .step { display: none; }
+  .step.active { display: block; }
+</style>
+</head>
+<body>
+
+<div class="progress-track">
+  <div class="progress-fill" id="progressFill"></div>
+</div>
+
+<div class="wizard">
+
+  <!-- ====== STEP: type ====== -->
+  <section class="step active" data-step="type">
+    <div class="step-header">
+      <img src="logo.png" alt="iWrap NY" class="site-logo" />
+      <div class="step-label">Step 1 of 4</div>
+      <h1 class="step-title">What are you looking to wrap?</h1>
+      <p class="step-subtitle">Choose the option that best describes your project.</p>
+    </div>
+    <div class="type-grid" id="typeGrid">
+      <div class="type-card active" data-type="vehicle">
+        <div class="type-icon">🚐</div>
+        <div>
+          <div class="type-name">Vehicle wrap</div>
+          <div class="type-desc">Cars, vans, SUVs, pickup trucks — search by year, make &amp; model</div>
+        </div>
+      </div>
+      <div class="type-card" data-type="dimension">
+        <div class="type-icon">🚛</div>
+        <div>
+          <div class="type-name">Box truck / trailer</div>
+          <div class="type-desc">Enter your vehicle dimensions for an instant estimate</div>
+        </div>
+      </div>
+      <div class="type-card" data-type="storefront">
+        <div class="type-icon">🏪</div>
+        <div>
+          <div class="type-name">Storefront / wall graphics</div>
+          <div class="type-desc">Window graphics, wall murals, and large-format prints — enter your dimensions</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== STEP: vehicle ====== -->
+  <section class="step" data-step="vehicle">
+    <div class="step-header">
+      <img src="logo.png" alt="iWrap NY" class="site-logo" />
+      <div class="step-label" id="lbl-vehicle"></div>
+      <h1 class="step-title">Pick your vehicle</h1>
+      <p class="step-subtitle">We use this to estimate square footage based on your body shape.</p>
+    </div>
+    <div class="form-card">
+      <div class="field">
+        <label for="selMake">Make</label>
+        <select id="selMake"><option value="">Select make</option></select>
+      </div>
+      <div class="field">
+        <label for="selModel">Model</label>
+        <select id="selModel" disabled><option value="">Select make first</option></select>
+      </div>
+      <div class="field">
+        <label for="selYear">Year</label>
+        <select id="selYear" disabled><option value="">Select model first</option></select>
+      </div>
+      <div class="field" id="variantField" style="display:none;">
+        <label for="selVariant">Variant <span class="optional">(body config)</span></label>
+        <select id="selVariant" disabled><option value="">Select variant</option></select>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== STEP: dimensions (box truck / trailer) ====== -->
+  <section class="step" data-step="dimensions">
+    <div class="step-header">
+      <img src="logo.png" alt="iWrap NY" class="site-logo" />
+      <div class="step-label" id="lbl-dimensions"></div>
+      <h1 class="step-title">Enter your panel dimensions</h1>
+      <p class="step-subtitle">Measure each panel separately for the most accurate quote.</p>
+    </div>
+    <div id="dimForm"></div>
+  </section>
+
+  <!-- ====== STEP: storefront ====== -->
+  <section class="step" data-step="storefront">
+    <div class="step-header">
+      <img src="logo.png" alt="iWrap NY" class="site-logo" />
+      <div class="step-label" id="lbl-storefront"></div>
+      <h1 class="step-title">Enter your surface dimensions</h1>
+      <p class="step-subtitle">Add each wall, window, or surface you want wrapped. We'll price them separately.</p>
+    </div>
+    <div id="storefrontForm"></div>
+  </section>
+
+  <!-- ====== STEP: coverage (vehicle path only) ====== -->
+  <section class="step" data-step="coverage">
+    <div class="step-header">
+      <img src="logo.png" alt="iWrap NY" class="site-logo" />
+      <div class="step-label" id="lbl-coverage"></div>
+      <h1 class="step-title">Choose a wrap size</h1>
+      <p class="step-subtitle">You can always adjust this later during the design phase.</p>
+    </div>
+    <div class="tier-tabs" id="tierTabs">
+      <button type="button" class="tier-tab" data-cov="lettering">Decals <span class="dollars">$</span></button>
+      <button type="button" class="tier-tab" data-cov="partial">Partial <span class="dollars">$$</span></button>
+      <button type="button" class="tier-tab active" data-cov="full">Full <span class="dollars">$$$</span></button>
+    </div>
+    <div class="tier-grid" id="tierGrid"></div>
+  </section>
+
+  <!-- ====== STEP: design ====== -->
+  <section class="step" data-step="design">
+    <div class="step-header">
+      <img src="logo.png" alt="iWrap NY" class="site-logo" />
+      <div class="step-label" id="lbl-design"></div>
+      <h1 class="step-title" id="designTitle">Do you have design files?</h1>
+      <p class="step-subtitle" id="designSubtitle">We'll quote with or without our in-house design service.</p>
+    </div>
+    <div class="option-grid" id="designOptions"></div>
+    <div class="info-banner" id="designBanner"></div>
+    <div id="logoServicesSection" style="display:none;"></div>
+  </section>
+
+  <!-- ====== STEP: addons (vehicle path only) ====== -->
+  <section class="step" data-step="addons">
+    <div class="step-header">
+      <img src="logo.png" alt="iWrap NY" class="site-logo" />
+      <div class="step-label" id="lbl-addons"></div>
+      <h1 class="step-title">Customize your project</h1>
+      <p class="step-subtitle">Optional add-ons to scope your job accurately.</p>
+    </div>
+    <div class="addon-list" id="addonList"></div>
+  </section>
+
+  <!-- ====== STEP: price ====== -->
+  <section class="step" data-step="price">
+    <div class="step-header">
+      <img src="logo.png" alt="iWrap NY" class="site-logo" />
+      <div class="step-label" id="lbl-price"></div>
+      <h1 class="step-title">Your price</h1>
+      <p class="step-subtitle">Enter your details and let us know how you'd like us to reach you.</p>
+    </div>
+    <div class="price-reveal" id="priceReveal"></div>
+    <div class="breakdown" id="breakdown"></div>
+    <form id="leadForm" class="lead-form">
+      <h3 class="full">Get your quote</h3>
+      <input type="text" name="name" placeholder="Your name" required />
+      <input type="tel" name="phone" id="phoneInput" placeholder="(631) 212-2329" maxlength="14" autocomplete="tel" />
+      <input type="email" name="email" placeholder="Email address" required class="full" />
+      <div class="contact-pref full">
+        <div class="contact-pref-label">How would you like us to follow up?</div>
+        <div class="contact-pref-options">
+          <label class="pref-option"><input type="radio" name="contact_pref" value="phone" /><span class="pref-btn">📞 Phone call</span></label>
+          <label class="pref-option"><input type="radio" name="contact_pref" value="email" checked /><span class="pref-btn">✉️ Email</span></label>
+          <label class="pref-option"><input type="radio" name="contact_pref" value="either" /><span class="pref-btn">Either works</span></label>
+        </div>
+      </div>
+      <input type="hidden" name="quote_summary" id="quoteSummary" />
+      <input type="hidden" name="quote_breakdown" id="quoteBreakdown" />
+      <label class="marketing-consent full">
+        <input type="checkbox" name="marketing_consent" id="marketingConsent" />
+        <span>I agree to receive promotional emails and SMS messages from iWrap NY about wrap deals, tips, and offers. You can unsubscribe at any time.</span>
+      </label>
+      <button type="submit" class="btn btn-primary full">Send my quote</button>
+    </form>
+  </section>
+
+  <!-- ====== Success ====== -->
+  <section class="step" data-step="done">
+    <div class="success-screen">
+      <img src="logo.png" alt="iWrap NY" class="success-logo" />
+      <div class="check">✓</div>
+      <h2>Quote sent</h2>
+      <p>Thanks — we received your details and will follow up within one business day.</p>
+      <a href="tel:+16312122329" class="call-btn">
+        <span class="call-icon">📞</span>
+        Call us now
+        <span class="call-number">+1 (631) 212-2329</span>
+      </a>
+      <p class="call-hint">Have questions? We're happy to talk through it.</p>
+      <div class="done-links">
+        <a href="https://maps.google.com/?q=657+Old+Willets+Path,+Hauppauge,+NY+11788" target="_blank" class="done-link">
+          📍 657 Old Willets Path, Hauppauge, NY 11788
+        </a>
+        <a href="https://share.google/zlBaKDD6WTBxsieMd" target="_blank" class="done-link">
+          ⭐ See our Google reviews
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <div class="step-actions" id="stepActions">
+    <button type="button" class="btn btn-back" id="btnBack">← Back</button>
+    <button type="button" class="btn btn-primary" id="btnNext">Continue</button>
+  </div>
+
+  <p class="footer-note">
+    Final price confirmed after a quick in-person walk-through.<br>
+    Color-change wraps and fleet pricing — <a href="#">contact us directly</a>.
+  </p>
+</div>
+
+<script src="vehicles.js?v=3"></script>
+<script>
+  /* ============================================================
+     Constants
+  ============================================================ */
+  const RATE_LOW = 10;
+  const RATE_HIGH = 12;
+  const WINDOW_RATE_LOW = 8;
+  const WINDOW_RATE_HIGH = 10;
+  const DESIGN_FEE = 400;
+  const LETTERING_LOW = 499;
+  const LETTERING_HIGH = 1499;
+  const LOGO_FEES = { vector: 0, raster: 100, none: 250 };
+  const PARTIAL_MULT = 0.5;
+  const TAX_RATE = 0.0875; // NYS sales tax 8.75%
+
+  // Routes: defines step order per quote type
+  const ROUTES = {
+    vehicle:    ['type', 'vehicle', 'coverage', 'design', 'addons', 'price'],
+    dimension:  ['type', 'dimensions', 'design', 'price'],
+    storefront: ['type', 'storefront', 'design', 'price'],
+  };
+
+  const DB = typeof VEHICLES !== "undefined" ? VEHICLES : [];
+
+  /* ============================================================
+     State
+  ============================================================ */
+  const state = {
+    step: 'type',
+    quoteType: 'vehicle',
+    // vehicle path
+    selMake: '', selModel: '', selYear: '', selVariant: '',
+    coverage: 'full',
+    includeRoof: false,
+    coverWindows: false,
+    logoService: 'none',
+    // design (shared)
+    needsDesign: false,
+    logoStatus: 'vector',  // for lettering
+    // dimension path (box truck / trailer)
+    dimUnit: 'ft',
+    dimSideLength: 0, dimSideHeight: 0,
+    dimRearWidth: 0, dimRearHeight: 0,
+    dimFrontWidth: 0, dimFrontHeight: 0,
+    dimWrapFront: true,
+    // storefront path
+    storeUnit: 'ft',
+    surfaces: [{ width: 0, height: 0 }],
+  };
+
+  /* ============================================================
+     Helpers
+  ============================================================ */
+  const $ = (id) => document.getElementById(id);
+  const fmtMoney = (n) => '$' + Math.round(n).toLocaleString();
+  const unique = (arr) => [...new Set(arr)];
+
+  function filtered(y, mk, mdl) {
+    let r = DB;
+    if (y)  r = r.filter(x => x.year === y);
+    if (mk) r = r.filter(x => x.make === mk);
+    if (mdl)r = r.filter(x => x.model === mdl);
+    return r;
+  }
+  function populateSelect(el, options, placeholder) {
+    el.innerHTML = `<option value="">${placeholder}</option>` +
+      options.map(o => `<option value="${o}">${o}</option>`).join('');
+  }
+  function findRecord() {
+    if (!(state.selYear && state.selMake && state.selModel)) return null;
+    return DB.find(r =>
+      r.year === state.selYear &&
+      r.make === state.selMake &&
+      r.model === state.selModel &&
+      (r.variant || '') === (state.selVariant || '')
+    );
+  }
+  function roofSqft(record) {
+    if (!record || !record.panels) return 0;
+    const p = record.panels.find(pp => pp.n === 'Panel F');
+    return p ? p.v : 0;
+  }
+  function windowFilmSqft(record) { return record?.windowFilm || 0; }
+
+  function getRoute() { return ROUTES[state.quoteType] || ROUTES.vehicle; }
+  function getStepIndex(stepId) { return getRoute().indexOf(stepId); }
+  function stepLabel(stepId) {
+    const route = getRoute();
+    const idx = route.indexOf(stepId);
+    return `Step ${idx + 1} of ${route.length}`;
+  }
+
+  /* ============================================================
+     Type selection
+  ============================================================ */
+  document.querySelectorAll('#typeGrid .type-card').forEach(card => {
+    card.addEventListener('click', () => {
+      document.querySelectorAll('#typeGrid .type-card').forEach(c => c.classList.remove('active'));
+      card.classList.add('active');
+      state.quoteType = card.dataset.type;
+      updateNextButton();
+    });
+  });
+
+  /* ============================================================
+     Vehicle cascade
+  ============================================================ */
+  $('selMake').addEventListener('change', () => {
+    state.selMake = $('selMake').value;
+    state.selModel = ''; state.selYear = ''; state.selVariant = '';
+    refreshModel(); refreshYear(); refreshVariant(); updateNextButton();
+  });
+  $('selModel').addEventListener('change', () => {
+    state.selModel = $('selModel').value;
+    state.selYear = ''; state.selVariant = '';
+    refreshYear(); refreshVariant(); updateNextButton();
+  });
+  $('selYear').addEventListener('change', () => {
+    state.selYear = $('selYear').value;
+    state.selVariant = '';
+    refreshVariant(); updateNextButton();
+  });
+  $('selVariant').addEventListener('change', () => {
+    state.selVariant = $('selVariant').value;
+    updateNextButton();
+  });
+
+  function refreshMake() {
+    populateSelect($('selMake'), unique(DB.map(r => r.make)).sort(), 'Select make');
+  }
+  function refreshModel() {
+    populateSelect($('selModel'), unique(filtered('', state.selMake, '').map(r => r.model)).sort(), 'Select model');
+    $('selModel').disabled = !state.selMake;
+  }
+  function refreshYear() {
+    const years = unique(filtered('', state.selMake, state.selModel).map(r => r.year))
+      .sort((a, b) => parseInt(b) - parseInt(a));
+    populateSelect($('selYear'), years, 'Select year');
+    $('selYear').disabled = !state.selModel;
+  }
+  function refreshVariant() {
+    const el = $('selVariant');
+    const field = $('variantField');
+    if (!state.selModel || !state.selYear) {
+      field.style.display = 'none'; el.disabled = true; state.selVariant = ''; return;
+    }
+    const variants = unique(filtered(state.selYear, state.selMake, state.selModel).map(r => r.variant || ''));
+    if (variants.length <= 1) {
+      state.selVariant = variants[0] || '';
+      field.style.display = 'none'; el.disabled = true; return;
+    }
+    populateSelect(el, variants.sort(), 'Select variant');
+    el.disabled = false; field.style.display = '';
+  }
+
+  /* ============================================================
+     Box truck: dynamic dimension form
+  ============================================================ */
+  function toSqft(a, b, unit) {
+    if (!a || !b) return 0;
+    return unit === 'in' ? (a * b) / 144 : a * b;
+  }
+
+  function renderDimensionsStep() {
+    const u = state.dimUnit;
+    const uLabel = u === 'in' ? 'inches' : 'feet';
+    const uShort = u === 'in' ? 'in' : 'ft';
+    const ph = u === 'in' ? { sl: 'e.g. 192', sh: 'e.g. 96', rw: 'e.g. 84', rh: 'e.g. 96', fw: 'e.g. 84', fh: 'e.g. 96' }
+                          : { sl: 'e.g. 16',  sh: 'e.g. 8',  rw: 'e.g. 7',  rh: 'e.g. 8',  fw: 'e.g. 7',  fh: 'e.g. 8' };
+
+    const field = (label, id, placeholder, val) => `
+      <div class="field">
+        <label>${label} <span class="optional">(${uShort})</span></label>
+        <input type="number" id="${id}" min="0.1" placeholder="${placeholder}" value="${val || ''}" step="any"/>
+      </div>`;
+
+    $('dimForm').innerHTML = `
+      <div class="form-card">
+        <div class="unit-row">
+          <span class="unit-label">Enter dimensions in:</span>
+          <div class="unit-btns">
+            <button type="button" class="unit-btn ${u==='ft'?'active':''}" data-unit="ft">Feet (ft)</button>
+            <button type="button" class="unit-btn ${u==='in'?'active':''}" data-unit="in">Inches (in)</button>
+          </div>
+        </div>
+
+        <div class="panel-section">
+          <div class="panel-section-header">
+            <span class="panel-section-label">Side panels</span>
+            <span class="panel-note">× 2 — both sides are the same size</span>
+          </div>
+          <div class="panel-fields">
+            ${field('Length', 'dimSideLength', ph.sl, state.dimSideLength || '')}
+            ${field('Height', 'dimSideHeight', ph.sh, state.dimSideHeight || '')}
+          </div>
+        </div>
+
+        <div class="panel-section">
+          <div class="panel-section-header">
+            <span class="panel-section-label">Rear panel</span>
+            <span class="panel-note">back of the box</span>
+          </div>
+          <div class="panel-fields">
+            ${field('Width', 'dimRearWidth', ph.rw, state.dimRearWidth || '')}
+            ${field('Height', 'dimRearHeight', ph.rh, state.dimRearHeight || '')}
+          </div>
+        </div>
+
+        <div class="front-toggle">
+          <div class="front-label">Wrap the front panel?</div>
+          <div class="front-btns">
+            <button type="button" class="ft-btn ${state.dimWrapFront?'active':''}" data-front="yes">Yes, include front</button>
+            <button type="button" class="ft-btn ${!state.dimWrapFront?'active':''}" data-front="no">Sides + back only</button>
+          </div>
+        </div>
+
+        ${state.dimWrapFront ? `
+        <div class="panel-section" style="margin-top:1rem;">
+          <div class="panel-section-header">
+            <span class="panel-section-label">Front panel</span>
+          </div>
+          <div class="panel-fields">
+            ${field('Width', 'dimFrontWidth', ph.fw, state.dimFrontWidth || '')}
+            ${field('Height', 'dimFrontHeight', ph.fh, state.dimFrontHeight || '')}
+          </div>
+        </div>` : ''}
+      </div>`;
+
+    // Unit toggle
+    $('dimForm').querySelectorAll('.unit-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        state.dimUnit = btn.dataset.unit;
+        renderDimensionsStep();
+      });
+    });
+
+    // Front toggle
+    $('dimForm').querySelectorAll('.ft-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        state.dimWrapFront = btn.dataset.front === 'yes';
+        renderDimensionsStep();
+        updateNextButton();
+      });
+    });
+
+    // Number inputs
+    ['dimSideLength','dimSideHeight','dimRearWidth','dimRearHeight','dimFrontWidth','dimFrontHeight'].forEach(id => {
+      const el = $(id);
+      if (el) el.addEventListener('input', () => {
+        state[id] = parseFloat(el.value) || 0;
+        updateNextButton();
+      });
+    });
+  }
+
+  /* ============================================================
+     Storefront: multiple surfaces
+  ============================================================ */
+  function renderStorefrontStep() {
+    const container = $('storefrontForm');
+    const u = state.storeUnit;
+    const uShort = u === 'in' ? 'in' : 'ft';
+    const ph = u === 'in' ? { w: 'e.g. 240', h: 'e.g. 96' } : { w: 'e.g. 20', h: 'e.g. 8' };
+
+    container.innerHTML = `
+      <div class="form-card">
+        <div class="unit-row">
+          <span class="unit-label">Enter dimensions in:</span>
+          <div class="unit-btns">
+            <button type="button" class="unit-btn ${u==='ft'?'active':''}" data-storeunit="ft">Feet (ft)</button>
+            <button type="button" class="unit-btn ${u==='in'?'active':''}" data-storeunit="in">Inches (in)</button>
+          </div>
+        </div>
+        ${state.surfaces.map((s, i) => `
+          <div class="surface-item" data-idx="${i}">
+            <div class="surface-header">
+              <span class="surface-label">Surface ${i + 1}</span>
+              ${i > 0 ? `<button type="button" class="surface-delete" data-idx="${i}">✕ Remove</button>` : ''}
+            </div>
+            <div class="surface-fields">
+              <div class="field">
+                <label>Width <span class="optional">(${uShort})</span></label>
+                <input type="number" class="surf-w" data-idx="${i}" min="0.1" step="any" placeholder="${ph.w}" value="${s.width || ''}" />
+              </div>
+              <div class="field">
+                <label>Height <span class="optional">(${uShort})</span></label>
+                <input type="number" class="surf-h" data-idx="${i}" min="0.1" step="any" placeholder="${ph.h}" value="${s.height || ''}" />
+              </div>
+            </div>
+          </div>`).join('')}
+        <button type="button" class="add-surface-btn">+ Add another surface</button>
+      </div>`;
+
+    // Unit toggle
+    container.querySelectorAll('[data-storeunit]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        state.storeUnit = btn.dataset.storeunit;
+        renderStorefrontStep();
+      });
+    });
+    container.querySelectorAll('.surf-w').forEach(el => {
+      el.addEventListener('input', () => {
+        state.surfaces[parseInt(el.dataset.idx)].width = parseFloat(el.value) || 0;
+        updateNextButton();
+      });
+    });
+    container.querySelectorAll('.surf-h').forEach(el => {
+      el.addEventListener('input', () => {
+        state.surfaces[parseInt(el.dataset.idx)].height = parseFloat(el.value) || 0;
+        updateNextButton();
+      });
+    });
+    container.querySelectorAll('.surface-delete').forEach(btn => {
+      btn.addEventListener('click', () => {
+        state.surfaces.splice(parseInt(btn.dataset.idx), 1);
+        renderStorefrontStep();
+        updateNextButton();
+      });
+    });
+    container.querySelector('.add-surface-btn').addEventListener('click', () => {
+      state.surfaces.push({ width: 0, height: 0 });
+      renderStorefrontStep();
+      updateNextButton();
+    });
+  }
+
+  /* ============================================================
+     Coverage tier cards
+  ============================================================ */
+  function startingAt(coverage) {
+    const record = findRecord();
+    if (!record) return null;
+    const roof = roofSqft(record);
+    if (coverage === 'lettering') return LETTERING_LOW;
+    if (coverage === 'partial') return (record.vinyl - roof) * PARTIAL_MULT * RATE_LOW;
+    return (record.vinyl - roof) * RATE_LOW;
+  }
+
+  const COVERAGE_META = {
+    lettering: { name: 'Decals / lettering', photoLabel: 'Lettering / decals photo · 16:10', includedTitle: "What's included in a decals package?", tagline: '👍  Simple branding that builds trust' },
+    partial:   { name: 'Partial wrap',        photoLabel: 'Partial wrap photo · 16:10',       includedTitle: "What's included in a partial wrap?",    tagline: '⭐  Stand out from competitors on the road' },
+    full:      { name: 'Full wrap',            photoLabel: 'Full wrap photo · 16:10',          includedTitle: "What's included in a full wrap?",        tagline: '🔥  Dominate attention wherever you go' },
+  };
+
+  function renderTierGrid() {
+    const grid = $('tierGrid');
+    grid.innerHTML = ['lettering', 'partial', 'full'].map(cov => {
+      const meta = COVERAGE_META[cov];
+      const sa = startingAt(cov);
+      const saText = sa != null ? `Starting at <strong>${fmtMoney(sa)}</strong>` : '';
+      return `
+        <div class="tier-card ${state.coverage === cov ? 'active' : ''}" data-cov="${cov}">
+          <div class="tier-photo">${meta.photoLabel}</div>
+          <div class="tier-head"><div class="tier-name">${meta.name}</div><div class="tier-starting">${saText}</div></div>
+          <div class="tier-thumbs">
+            <div class="tier-thumbs-label">Real examples at this price</div>
+            <div class="tier-thumbs-row"><div class="tier-thumb"></div><div class="tier-thumb"></div><div class="tier-thumb"></div><div class="tier-thumb"></div></div>
+          </div>
+          <div class="tier-included"><span class="checkmark">✓</span> ${meta.includedTitle}</div>
+          <div class="tier-tagline">${meta.tagline}</div>
+        </div>`;
+    }).join('');
+    grid.querySelectorAll('.tier-card').forEach(card => {
+      card.addEventListener('click', () => {
+        state.coverage = card.dataset.cov;
+        renderTierGrid(); renderTierTabs(); updateNextButton();
+      });
+    });
+  }
+
+  function renderTierTabs() {
+    document.querySelectorAll('.tier-tab').forEach(tab => {
+      tab.classList.toggle('active', tab.dataset.cov === state.coverage);
+      tab.addEventListener('click', () => {
+        state.coverage = tab.dataset.cov;
+        renderTierGrid(); renderTierTabs();
+      }, { once: true });
+    });
+  }
+
+  /* ============================================================
+     Design step
+  ============================================================ */
+  function renderDesignStep() {
+    const grid = $('designOptions');
+    const banner = $('designBanner');
+    const title = $('designTitle');
+    const subtitle = $('designSubtitle');
+    const logoSection = $('logoServicesSection');
+
+    // Lettering on vehicle path → logo options
+    if (state.quoteType === 'vehicle' && state.coverage === 'lettering') {
+      title.textContent = 'Do you have a logo?';
+      subtitle.textContent = 'Vector logos print sharp at any size. Raster or no logo? We can help.';
+      grid.className = 'option-grid three';
+      grid.innerHTML = `
+        <div class="option-card ${state.logoStatus==='vector'?'active':''}" data-logo="vector">
+          <div class="name">I have a vector logo</div>
+          <div class="desc">AI / EPS / SVG file ready to print</div>
+        </div>
+        <div class="option-card ${state.logoStatus==='raster'?'active':''}" data-logo="raster">
+          <div class="name">I have a logo, needs vectorizing</div>
+          <div class="desc">+$100 to convert JPG/PNG to vector</div>
+        </div>
+        <div class="option-card ${state.logoStatus==='none'?'active':''}" data-logo="none">
+          <div class="name">I need a logo created</div>
+          <div class="desc">+$250 to design a logo from scratch</div>
+        </div>`;
+      banner.innerHTML = `<strong>Why this matters:</strong> Vector logos print sharp at any size. Raster files (JPG / PNG / screenshots) almost always need to be redrawn before they look good on a vehicle.`;
+      grid.querySelectorAll('[data-logo]').forEach(c => {
+        c.addEventListener('click', () => { state.logoStatus = c.dataset.logo; renderDesignStep(); });
+      });
+      logoSection.style.display = 'none';
+
+    } else {
+      // All other cases: design files question
+      title.textContent = 'Do you have design files?';
+      subtitle.textContent = "We'll quote with or without our in-house design service.";
+      grid.className = 'option-grid';
+      grid.innerHTML = `
+        <div class="option-card ${!state.needsDesign?'active':''}" data-design="ready">
+          <div class="name">I have print-ready files</div>
+          <div class="desc">Vector / high-res files sized and ready to print</div>
+        </div>
+        <div class="option-card ${state.needsDesign?'active':''}" data-design="needed">
+          <div class="name">I need design</div>
+          <div class="desc">${state.quoteType === 'storefront' ? 'Design fee quoted separately — varies by project scope' : '+$400 design fee added to quote'}</div>
+        </div>`;
+      banner.innerHTML = `<strong>Note:</strong> AI-generated images (Midjourney, ChatGPT, etc.) are <em>not</em> print-ready. They need to be redrawn and resized — that counts as "I need design."`;
+      grid.querySelectorAll('[data-design]').forEach(c => {
+        c.addEventListener('click', () => { state.needsDesign = c.dataset.design === 'needed'; renderDesignStep(); });
+      });
+
+      // Logo services inline for non-vehicle paths (vehicle has them in add-ons)
+      if (state.quoteType !== 'vehicle') {
+        logoSection.style.display = '';
+        logoSection.innerHTML = `
+          <div class="logo-services-block">
+            <div class="ls-title">Logo services</div>
+            <div class="ls-desc">For a sharp-looking result, your logo needs to be a <strong>vector file</strong> (.AI, .EPS, .SVG) that stays crisp at any size. A regular JPG or PNG will look blurry or pixelated when printed large.</div>
+            <div class="logo-service-btns">
+              <button type="button" class="ls-btn ${state.logoService==='none'?'active':''}" data-ls="none">I have a vector file</button>
+              <button type="button" class="ls-btn ${state.logoService==='vectorize'?'active':''}" data-ls="vectorize">I only have a JPG/PNG (+$100)</button>
+              <button type="button" class="ls-btn ${state.logoService==='create'?'active':''}" data-ls="create">I need a logo made (+$250)</button>
+            </div>
+          </div>`;
+        logoSection.querySelectorAll('.ls-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            state.logoService = btn.dataset.ls;
+            logoSection.querySelectorAll('.ls-btn').forEach(b => b.classList.toggle('active', b.dataset.ls === state.logoService));
+          });
+        });
+      } else {
+        logoSection.style.display = 'none';
+      }
+    }
+  }
+
+  /* ============================================================
+     Add-ons (vehicle path only)
+  ============================================================ */
+  function renderAddons() {
+    const record = findRecord();
+    const list = $('addonList');
+    const rows = [];
+
+    rows.push(`
+      <div class="addon-row">
+        <div class="addon-icon">🛠️</div>
+        <div class="addon-text"><div class="name">Professional install</div><div class="desc">By our certified iWrap NY install crew</div></div>
+        <div class="addon-side"><span class="addon-locked">Included</span></div>
+      </div>`);
+
+    if (state.coverage === 'full') {
+      const roof = roofSqft(record);
+      rows.push(`
+        <div class="addon-row">
+          <div class="addon-icon">🚐</div>
+          <div class="addon-text">
+            <div class="name">Wrap the roof</div>
+            <div class="desc">This option includes wrapping the flat top surface of the vehicle's roof. The area above the windshield is already included in the standard wrap for medium and high roof vans, but this adds the main roof section. It is a great option for extra visibility from above, such as drones, parking garages, and taller buildings.</div>
+          </div>
+          <div class="addon-side">
+            <label class="toggle-sw">
+              <input type="checkbox" id="tgRoof" ${state.includeRoof ? 'checked' : ''} ${roof ? '' : 'disabled'}/>
+              <span class="slider"></span>
+            </label>
+            <div class="price">${roof ? `+${fmtMoney(roof * RATE_LOW)}–${fmtMoney(roof * RATE_HIGH)}` : 'No data'}</div>
+          </div>
+        </div>`);
+
+      const wf = windowFilmSqft(record);
+      rows.push(`
+        <div class="addon-row">
+          <div class="addon-icon">🪟</div>
+          <div class="addon-text">
+            <div class="name">Perforated window wraps</div>
+            <div class="desc">Makes the full wrap look seamless and complete — you can still see out from inside. Only available on passenger vans &amp; trucks with side/rear windows.</div>
+          </div>
+          <div class="addon-side">
+            <label class="toggle-sw">
+              <input type="checkbox" id="tgWindows" ${state.coverWindows ? 'checked' : ''} ${wf ? '' : 'disabled'}/>
+              <span class="slider"></span>
+            </label>
+            <div class="price">${wf ? `+${fmtMoney(wf * WINDOW_RATE_LOW)}–${fmtMoney(wf * WINDOW_RATE_HIGH)}` : 'No data'}</div>
+          </div>
+        </div>`);
+    } else {
+      state.coverWindows = false;
+    }
+
+    if (state.coverage !== 'lettering') {
+      rows.push(`
+        <div class="addon-row">
+          <div class="addon-icon">🎨</div>
+          <div class="addon-text">
+            <div class="name">Logo services</div>
+            <div class="desc">For a sharp-looking wrap, your logo needs to be a <strong>vector file</strong> — a clean, scalable format (usually .AI, .EPS, or .SVG) that stays crisp at any size. A regular JPG or PNG from Google or your website won't cut it — it will look blurry or pixelated on the vehicle.</div>
+          </div>
+          <div class="addon-side" style="min-width:160px;">
+            <div class="logo-service-btns-v">
+              <button type="button" class="ls-btn-sm ${state.logoService==='none'?'active':''}" data-ls="none">I have a vector file</button>
+              <button type="button" class="ls-btn-sm ${state.logoService==='vectorize'?'active':''}" data-ls="vectorize">I only have a JPG/PNG (+$100)</button>
+              <button type="button" class="ls-btn-sm ${state.logoService==='create'?'active':''}" data-ls="create">I need a logo made (+$250)</button>
+            </div>
+          </div>
+        </div>`);
+    } else {
+      state.logoService = 'none';
+    }
+
+    list.innerHTML = rows.join('');
+
+    const roofToggle = $('tgRoof');
+    if (roofToggle) roofToggle.addEventListener('change', e => { state.includeRoof = e.target.checked; });
+    const winToggle = $('tgWindows');
+    if (winToggle) winToggle.addEventListener('change', e => { state.coverWindows = e.target.checked; });
+    document.querySelectorAll('.ls-btn-sm').forEach(btn => {
+      btn.addEventListener('click', () => {
+        state.logoService = btn.dataset.ls;
+        document.querySelectorAll('.ls-btn-sm').forEach(b => b.classList.toggle('active', b.dataset.ls === state.logoService));
+      });
+    });
+  }
+
+  /* ============================================================
+     Pricing
+  ============================================================ */
+  function computePrice() {
+    const logoSvcFee = state.logoService !== 'none' ? (state.logoService === 'vectorize' ? 100 : 250) : 0;
+    const logoSvcLabel = state.logoService === 'vectorize' ? 'Logo vectorizing (JPG→vector)' : 'Logo creation from scratch';
+
+    if (state.quoteType === 'dimension') {
+      const u = state.dimUnit;
+      const sides = 2 * toSqft(state.dimSideLength, state.dimSideHeight, u);
+      const rear  = toSqft(state.dimRearWidth, state.dimRearHeight, u);
+      const front = state.dimWrapFront ? toSqft(state.dimFrontWidth, state.dimFrontHeight, u) : 0;
+      const sqft  = sides + rear + front;
+      const uLabel = u === 'in' ? 'in' : 'ft';
+      const frontNote = state.dimWrapFront ? '2 sides + front + back' : '2 sides + back only';
+      const designFee = state.needsDesign ? DESIGN_FEE : 0;
+      const low  = sqft * RATE_LOW + designFee + logoSvcFee;
+      const high = sqft * RATE_HIGH + designFee + logoSvcFee;
+      const dimStr = `sides ${state.dimSideLength}×${state.dimSideHeight}${uLabel}, rear ${state.dimRearWidth}×${state.dimRearHeight}${uLabel}${state.dimWrapFront ? `, front ${state.dimFrontWidth}×${state.dimFrontHeight}${uLabel}` : ''}`;
+      return {
+        vehicleLine: `Box Truck / Trailer`,
+        low, high, baseLow: sqft * RATE_LOW, baseHigh: sqft * RATE_HIGH,
+        baseLabel: `Box truck wrap (${frontNote})`,
+        designFee, logoFee: 0, logoLabel: '', logoSvcFee, logoSvcLabel,
+        windowLow: 0, windowHigh: 0, surfaceItems: null,
+        dimStr,
+      };
+    }
+
+    if (state.quoteType === 'storefront') {
+      const u = state.storeUnit;
+      const uLabel = u === 'in' ? 'in' : 'ft';
+      const surfaceItems = state.surfaces.map((s, i) => {
+        const sqft = toSqft(s.width, s.height, u);
+        return {
+          label: `Surface ${i + 1} (${s.width} × ${s.height} ${uLabel})`,
+          sqft,
+          low: sqft * RATE_LOW,
+          high: sqft * RATE_HIGH,
+        };
+      });
+      const baseLow = surfaceItems.reduce((a, s) => a + s.low, 0);
+      const baseHigh = surfaceItems.reduce((a, s) => a + s.high, 0);
+      const low = baseLow + logoSvcFee;
+      const high = baseHigh + logoSvcFee;
+      return {
+        vehicleLine: `Storefront / Wall Graphics (${state.surfaces.length} surface${state.surfaces.length > 1 ? 's' : ''})`,
+        low, high, baseLow, baseHigh,
+        baseLabel: 'Storefront / wall graphics',
+        designFee: 0, designTBD: state.needsDesign,
+        logoFee: 0, logoLabel: '', logoSvcFee, logoSvcLabel,
+        windowLow: 0, windowHigh: 0, surfaceItems,
+      };
+    }
+
+    // Vehicle path
+    const record = findRecord();
+    if (!record) return null;
+    const roof = roofSqft(record);
+    const wf = windowFilmSqft(record);
+    const variantText = record.variant ? ` ${record.variant}` : '';
+
+    let baseLow = 0, baseHigh = 0, baseLabel = '';
+    let designFee = 0, logoFee = 0, logoLabel = '';
+    let windowLow = 0, windowHigh = 0;
+
+    if (state.coverage === 'lettering') {
+      baseLow = LETTERING_LOW; baseHigh = LETTERING_HIGH;
+      baseLabel = 'Lettering / decals';
+      logoFee = LOGO_FEES[state.logoStatus] || 0;
+      logoLabel = { vector: 'Vector logo provided', raster: 'Logo vectorizing', none: 'Logo design' }[state.logoStatus];
+    } else if (state.coverage === 'partial') {
+      const sqft = (record.vinyl - roof) * PARTIAL_MULT;
+      baseLow = sqft * RATE_LOW; baseHigh = sqft * RATE_HIGH;
+      baseLabel = 'Partial / half wrap';
+      if (state.needsDesign) designFee = DESIGN_FEE;
+    } else {
+      const sqft = state.includeRoof ? record.vinyl : record.vinyl - roof;
+      baseLow = sqft * RATE_LOW; baseHigh = sqft * RATE_HIGH;
+      baseLabel = `Full wrap${state.includeRoof ? '' : ' (roof excluded)'}`;
+      if (state.needsDesign) designFee = DESIGN_FEE;
+    }
+
+    if (state.coverWindows && wf) {
+      windowLow = wf * WINDOW_RATE_LOW; windowHigh = wf * WINDOW_RATE_HIGH;
+    }
+
+    const vehicleLogoSvcFee = state.coverage !== 'lettering' ? logoSvcFee : 0;
+    const vehicleLogoSvcLabel = vehicleLogoSvcFee > 0 ? logoSvcLabel : '';
+    const low = baseLow + designFee + logoFee + vehicleLogoSvcFee + windowLow;
+    const high = baseHigh + designFee + logoFee + vehicleLogoSvcFee + windowHigh;
+
+    return {
+      vehicleLine: `${record.year} ${record.make} ${record.model}${variantText}`,
+      low, high, baseLow, baseHigh, baseLabel,
+      designFee, logoFee, logoLabel,
+      logoSvcFee: vehicleLogoSvcFee, logoSvcLabel: vehicleLogoSvcLabel,
+      windowLow, windowHigh,
+    };
+  }
+
+  function renderQuote() {
+    const p = computePrice();
+    if (!p) return;
+
+    const priceNote = p.designTBD
+      ? 'Includes vinyl and installation. Design fee quoted separately.'
+      : 'Includes premium vinyl and professional installation';
+    $('priceReveal').innerHTML = `
+      <div class="vehicle-line">${p.vehicleLine}</div>
+      <div class="price-range">${fmtMoney(p.low)}<span class="sep">–</span>${fmtMoney(p.high)}</div>
+      <div class="price-note">${priceNote}</div>`;
+
+    // Build breakdown rows — itemize surfaces if storefront
+    let rows = [];
+    if (p.surfaceItems && p.surfaceItems.length > 0) {
+      p.surfaceItems.forEach(s => {
+        rows.push(`<div class="row"><span>${s.label}</span><span>${fmtMoney(s.low)}–${fmtMoney(s.high)}</span></div>`);
+      });
+    } else {
+      rows.push(`<div class="row"><span>${p.baseLabel}</span><span>${fmtMoney(p.baseLow)}–${fmtMoney(p.baseHigh)}</span></div>`);
+    }
+    if (p.designTBD)      rows.push(`<div class="row"><span>In-house design</span><span style="color:var(--brand);font-weight:600;">TBD</span></div>`);
+    else if (p.designFee > 0) rows.push(`<div class="row"><span>In-house design</span><span>+${fmtMoney(p.designFee)}</span></div>`);
+    if (p.logoFee > 0)    rows.push(`<div class="row"><span>${p.logoLabel}</span><span>+${fmtMoney(p.logoFee)}</span></div>`);
+    if (p.logoSvcFee > 0) rows.push(`<div class="row"><span>${p.logoSvcLabel}</span><span>+${fmtMoney(p.logoSvcFee)}</span></div>`);
+    if (p.windowLow > 0)  rows.push(`<div class="row"><span>Perforated window wraps</span><span>+${fmtMoney(p.windowLow)}–${fmtMoney(p.windowHigh)}</span></div>`);
+    rows.push(`<div class="row subtotal"><span>Subtotal</span><span>${fmtMoney(p.low)}–${fmtMoney(p.high)}</span></div>`);
+    const taxLow = p.low * TAX_RATE;
+    const taxHigh = p.high * TAX_RATE;
+    rows.push(`<div class="row"><span>NYS Sales Tax (8.75%)</span><span>${fmtMoney(taxLow)}–${fmtMoney(taxHigh)}</span></div>`);
+    const totalLow = p.low + taxLow;
+    const totalHigh = p.high + taxHigh;
+    rows.push(`<div class="row total"><span>Total estimate</span><span>${fmtMoney(totalLow)}–${fmtMoney(totalHigh)}</span></div>`);
+    $('breakdown').innerHTML = rows.join('');
+
+    $('quoteSummary').value = `${p.vehicleLine} — ${p.baseLabel} — ${fmtMoney(totalLow)}–${fmtMoney(totalHigh)}`;
+    $('quoteBreakdown').value = rows.map(r => r.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim()).join(' | ');
+  }
+
+  /* ============================================================
+     Navigation
+  ============================================================ */
+  function canAdvance() {
+    switch (state.step) {
+      case 'type':       return !!state.quoteType;
+      case 'vehicle':
+        if (!state.selMake || !state.selModel || !state.selYear) return false;
+        if ($('variantField').style.display !== 'none' && !state.selVariant) return false;
+        return true;
+      case 'dimensions': {
+        const sidesOk = state.dimSideLength > 0 && state.dimSideHeight > 0;
+        const rearOk = state.dimRearWidth > 0 && state.dimRearHeight > 0;
+        const frontOk = !state.dimWrapFront || (state.dimFrontWidth > 0 && state.dimFrontHeight > 0);
+        return sidesOk && rearOk && frontOk;
+      }
+      case 'storefront': return state.surfaces.length > 0 && state.surfaces.every(s => s.width > 0 && s.height > 0);
+      default:           return true;
+    }
+  }
+
+  function updateNextButton() {
+    const btn = $('btnNext');
+    btn.disabled = !canAdvance();
+    const route = getRoute();
+    const idx = route.indexOf(state.step);
+    const nextStepId = route[idx + 1];
+    btn.textContent = nextStepId === 'price' ? 'See my price' : 'Continue';
+    btn.style.display = state.step === 'price' ? 'none' : '';
+    $('btnBack').style.display = state.step === 'type' ? 'none' : 'inline-flex';
+  }
+
+  function showStep(stepId) {
+    if (stepId === 'done') {
+      document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+      document.querySelector('[data-step="done"]').classList.add('active');
+      $('stepActions').style.display = 'none';
+      $('progressFill').style.width = '100%';
+      return;
+    }
+
+    document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+    const target = document.querySelector(`[data-step="${stepId}"]`);
+    if (target) target.classList.add('active');
+    state.step = stepId;
+
+    // Update step label
+    const lbl = $(`lbl-${stepId}`);
+    if (lbl) lbl.textContent = stepLabel(stepId);
+
+    // Progress bar
+    const route = getRoute();
+    const idx = route.indexOf(stepId);
+    $('progressFill').style.width = `${((idx + 1) / route.length) * 100}%`;
+
+    // Per-step renders
+    if (stepId === 'dimensions')  renderDimensionsStep();
+    if (stepId === 'storefront')  renderStorefrontStep();
+    if (stepId === 'coverage')   { renderTierGrid(); renderTierTabs(); }
+    if (stepId === 'design')     renderDesignStep();
+    if (stepId === 'addons')     renderAddons();
+    if (stepId === 'price')      renderQuote();
+
+    updateNextButton();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  $('btnNext').addEventListener('click', () => {
+    if (!canAdvance()) return;
+    const route = getRoute();
+    const idx = route.indexOf(state.step);
+    if (idx < route.length - 1) showStep(route[idx + 1]);
+  });
+
+  $('btnBack').addEventListener('click', () => {
+    const route = getRoute();
+    const idx = route.indexOf(state.step);
+    if (idx > 0) showStep(route[idx - 1]);
+  });
+
+  /* ============================================================
+     Lead form
+  ============================================================ */
+  $('leadForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = e.target.querySelector('button[type=submit]');
+    btn.disabled = true;
+    btn.textContent = 'Sending...';
+    const data = Object.fromEntries(new FormData(e.target));
+    try {
+      const res = await fetch('/api/quote', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      if (!res.ok) throw new Error('Server error');
+      showStep('done');
+    } catch (err) {
+      console.error(err);
+      btn.disabled = false;
+      btn.textContent = 'Send my quote';
+      alert('Something went wrong — please call us directly or try again.');
+    }
+  });
+
+  /* ============================================================
+     Phone mask — formats to (XXX) XXX-XXXX as user types
+     Backend normalizes to +1XXXXXXXXXX for Klaviyo
+  ============================================================ */
+  const phoneInput = document.getElementById('phoneInput');
+  if (phoneInput) {
+    phoneInput.addEventListener('input', (e) => {
+      let digits = e.target.value.replace(/\D/g, '').slice(0, 10);
+      let masked = '';
+      if (digits.length > 0) masked = '(' + digits.slice(0, 3);
+      if (digits.length >= 4) masked += ') ' + digits.slice(3, 6);
+      if (digits.length >= 7) masked += '-' + digits.slice(6, 10);
+      e.target.value = masked;
+    });
+
+    phoneInput.addEventListener('keydown', (e) => {
+      // Allow backspace to work naturally
+      if (e.key === 'Backspace') {
+        const val = phoneInput.value;
+        // Remove trailing non-digit too so backspace feels natural
+        if (val && !/\d$/.test(val)) {
+          e.preventDefault();
+          phoneInput.value = val.replace(/[^\d]*$/, '').slice(0, -1);
+          phoneInput.dispatchEvent(new Event('input'));
+        }
+      }
+    });
+  }
+
+  /* ============================================================
+     Init
+  ============================================================ */
+  refreshMake();
+  showStep('type');
+</script>
+</body>
+</html>
