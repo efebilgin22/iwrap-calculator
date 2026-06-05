@@ -256,6 +256,19 @@
   .success-screen .check { width: 64px; height: 64px; border-radius: 50%; background: var(--success); color: white; font-size: 2rem; line-height: 64px; margin: 0 auto 1.1rem; }
   .success-screen h2 { font-size: 1.6rem; color: var(--ink); margin-bottom: 0.5rem; }
   .success-screen p { color: var(--muted); }
+  .call-btn {
+    display: inline-flex; flex-direction: column; align-items: center; gap: 0.2rem;
+    background: var(--brand); color: #fff; text-decoration: none;
+    border-radius: 14px; padding: 1rem 2rem; margin: 1.5rem auto 0.75rem;
+    font-weight: 700; transition: background 0.15s, transform 0.08s;
+    box-shadow: 0 4px 16px rgba(242,112,36,0.30);
+  }
+  .call-btn:hover { background: var(--brand-dark); }
+  .call-btn:active { transform: scale(0.98); }
+  .call-icon { font-size: 1.5rem; margin-bottom: 0.1rem; }
+  .call-btn > span.call-number { font-size: 1.15rem; font-weight: 800; letter-spacing: 0.01em; }
+  .call-btn > span.call-icon { font-size: 1.4rem; }
+  .call-hint { font-size: 0.88rem; color: var(--muted-2); margin-top: 0.25rem; }
 
   .footer-note { text-align: center; color: var(--muted-2); font-size: 0.82rem; margin-top: 2.5rem; line-height: 1.5; }
   .footer-note a { color: var(--brand); text-decoration: none; }
@@ -463,6 +476,12 @@
       <div class="check">✓</div>
       <h2>Quote sent</h2>
       <p>Thanks — we received your details and will follow up within one business day.</p>
+      <a href="tel:+16312122329" class="call-btn">
+        <span class="call-icon">📞</span>
+        Call us now
+        <span class="call-number">+1 (631) 212-2329</span>
+      </a>
+      <p class="call-hint">Have questions? We're happy to talk through it.</p>
     </div>
   </section>
 
