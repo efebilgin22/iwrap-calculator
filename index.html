@@ -461,7 +461,7 @@
     <form id="leadForm" class="lead-form">
       <h3 class="full">Get your quote</h3>
       <input type="text" name="name" placeholder="Your name" required />
-      <input type="tel" name="phone" placeholder="Phone number" />
+      <input type="tel" name="phone" id="phoneInput" placeholder="(631) 212-2329" maxlength="14" autocomplete="tel" />
       <input type="email" name="email" placeholder="Email address" required class="full" />
       <div class="contact-pref full">
         <div class="contact-pref-label">How would you like us to follow up?</div>
@@ -1306,6 +1306,35 @@
       alert('Something went wrong — please call us directly or try again.');
     }
   });
+
+  /* ============================================================
+     Phone mask — formats to (XXX) XXX-XXXX as user types
+     Backend normalizes to +1XXXXXXXXXX for Klaviyo
+  ============================================================ */
+  const phoneInput = document.getElementById('phoneInput');
+  if (phoneInput) {
+    phoneInput.addEventListener('input', (e) => {
+      let digits = e.target.value.replace(/\D/g, '').slice(0, 10);
+      let masked = '';
+      if (digits.length > 0) masked = '(' + digits.slice(0, 3);
+      if (digits.length >= 4) masked += ') ' + digits.slice(3, 6);
+      if (digits.length >= 7) masked += '-' + digits.slice(6, 10);
+      e.target.value = masked;
+    });
+
+    phoneInput.addEventListener('keydown', (e) => {
+      // Allow backspace to work naturally
+      if (e.key === 'Backspace') {
+        const val = phoneInput.value;
+        // Remove trailing non-digit too so backspace feels natural
+        if (val && !/\d$/.test(val)) {
+          e.preventDefault();
+          phoneInput.value = val.replace(/[^\d]*$/, '').slice(0, -1);
+          phoneInput.dispatchEvent(new Event('input'));
+        }
+      }
+    });
+  }
 
   /* ============================================================
      Init
