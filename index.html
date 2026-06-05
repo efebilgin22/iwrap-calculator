@@ -261,6 +261,24 @@
   .footer-note a { color: var(--brand); text-decoration: none; }
   .footer-note a:hover { text-decoration: underline; }
 
+  /* ---- Front panel toggle (box truck) ---- */
+  .front-toggle { margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+  .front-label { font-size: 0.9rem; font-weight: 600; color: var(--ink); margin-bottom: 0.5rem; }
+  .front-btns { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .ft-btn { background: var(--bg); border: 1.5px solid var(--border); border-radius: 8px; padding: 0.55rem 1rem; font-size: 0.88rem; font-weight: 600; color: var(--muted); cursor: pointer; font-family: inherit; transition: all 0.12s; }
+  .ft-btn.active { background: var(--ink); color: white; border-color: var(--ink); }
+
+  /* ---- Storefront multiple surfaces ---- */
+  .surface-item { margin-bottom: 1.25rem; padding-bottom: 1.25rem; border-bottom: 1px solid var(--border); }
+  .surface-item:last-of-type { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .surface-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem; }
+  .surface-label { font-weight: 700; font-size: 0.92rem; color: var(--ink); }
+  .surface-delete { background: none; border: none; color: var(--muted-2); font-size: 0.82rem; font-weight: 600; cursor: pointer; padding: 0.2rem 0.5rem; border-radius: 6px; font-family: inherit; transition: color 0.12s; }
+  .surface-delete:hover { color: #dc2626; }
+  .surface-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+  .add-surface-btn { width: 100%; margin-top: 1rem; background: var(--bg); border: 1.5px dashed var(--border-strong); border-radius: 10px; padding: 0.75rem; font-size: 0.9rem; font-weight: 600; color: var(--muted); cursor: pointer; font-family: inherit; transition: all 0.12s; }
+  .add-surface-btn:hover { border-color: var(--brand); color: var(--brand); }
+
   .step { display: none; }
   .step.active { display: block; }
 </style>
@@ -290,7 +308,7 @@
         </div>
       </div>
       <div class="type-card" data-type="dimension">
-        <div class="type-icon">📦</div>
+        <div class="type-icon">🚛</div>
         <div>
           <div class="type-name">Box truck / trailer</div>
           <div class="type-desc">Enter your vehicle dimensions for an instant estimate</div>
@@ -356,7 +374,14 @@
         <input type="number" id="dimWidth" min="1" max="20" placeholder="e.g. 7" />
       </div>
       <div class="dim-note">
-        Total wrap area = 2 × (length × height) + 2 × (width × height). Covers both sides, front, and back.
+        Total wrap area calculated from your dimensions below.
+      </div>
+      <div class="front-toggle">
+        <div class="front-label">Wrap the front panel (cab face)?</div>
+        <div class="front-btns">
+          <button type="button" class="ft-btn active" data-front="yes">Yes, include front</button>
+          <button type="button" class="ft-btn" data-front="no">Sides + back only</button>
+        </div>
       </div>
     </div>
   </section>
@@ -366,22 +391,10 @@
     <div class="step-header">
       <img src="logo.png" alt="iWrap NY" class="site-logo" />
       <div class="step-label" id="lbl-storefront"></div>
-      <h1 class="step-title">Enter your dimensions</h1>
-      <p class="step-subtitle">Total width and height of the area to be covered.</p>
+      <h1 class="step-title">Enter your surface dimensions</h1>
+      <p class="step-subtitle">Add each wall, window, or surface you want wrapped. We'll price them separately.</p>
     </div>
-    <div class="form-card">
-      <div class="field">
-        <label for="storeWidth">Total width <span class="optional">(ft)</span></label>
-        <input type="number" id="storeWidth" min="1" placeholder="e.g. 20" />
-      </div>
-      <div class="field">
-        <label for="storeHeight">Height <span class="optional">(ft)</span></label>
-        <input type="number" id="storeHeight" min="1" placeholder="e.g. 8" />
-      </div>
-      <div class="dim-note">
-        Total sq ft = width × height. For multiple windows or panels, enter the combined total width.
-      </div>
-    </div>
+    <div id="storefrontForm"></div>
   </section>
 
   <!-- ====== STEP: coverage (vehicle path only) ====== -->
@@ -514,8 +527,9 @@
     logoStatus: 'vector',  // for lettering
     // dimension path
     dimLength: 0, dimHeight: 0, dimWidth: 0,
+    dimWrapFront: true,
     // storefront path
-    storeWidth: 0, storeHeight: 0,
+    surfaces: [{ width: 0, height: 0 }],
   };
 
   /* ============================================================
@@ -624,7 +638,7 @@
   }
 
   /* ============================================================
-     Dimension inputs
+     Dimension inputs (box truck)
   ============================================================ */
   ['dimLength', 'dimHeight', 'dimWidth'].forEach(id => {
     $(id).addEventListener('input', () => {
@@ -632,12 +646,68 @@
       updateNextButton();
     });
   });
-  ['storeWidth', 'storeHeight'].forEach(id => {
-    $(id).addEventListener('input', () => {
-      state[id] = parseFloat($(id).value) || 0;
-      updateNextButton();
+
+  // Front panel toggle
+  document.querySelectorAll('.ft-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.ft-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      state.dimWrapFront = btn.dataset.front === 'yes';
     });
   });
+
+  /* ============================================================
+     Storefront: multiple surfaces
+  ============================================================ */
+  function renderStorefrontStep() {
+    const container = $('storefrontForm');
+    container.innerHTML = `
+      <div class="form-card">
+        ${state.surfaces.map((s, i) => `
+          <div class="surface-item" data-idx="${i}">
+            <div class="surface-header">
+              <span class="surface-label">Surface ${i + 1}</span>
+              ${i > 0 ? `<button type="button" class="surface-delete" data-idx="${i}">✕ Remove</button>` : ''}
+            </div>
+            <div class="surface-fields">
+              <div class="field">
+                <label>Width <span class="optional">(ft)</span></label>
+                <input type="number" class="surf-w" data-idx="${i}" min="1" placeholder="e.g. 20" value="${s.width || ''}" />
+              </div>
+              <div class="field">
+                <label>Height <span class="optional">(ft)</span></label>
+                <input type="number" class="surf-h" data-idx="${i}" min="1" placeholder="e.g. 8" value="${s.height || ''}" />
+              </div>
+            </div>
+          </div>`).join('')}
+        <button type="button" class="add-surface-btn">+ Add another surface</button>
+      </div>`;
+
+    container.querySelectorAll('.surf-w').forEach(el => {
+      el.addEventListener('input', () => {
+        state.surfaces[parseInt(el.dataset.idx)].width = parseFloat(el.value) || 0;
+        updateNextButton();
+      });
+    });
+    container.querySelectorAll('.surf-h').forEach(el => {
+      el.addEventListener('input', () => {
+        state.surfaces[parseInt(el.dataset.idx)].height = parseFloat(el.value) || 0;
+        updateNextButton();
+      });
+    });
+    container.querySelectorAll('.surface-delete').forEach(btn => {
+      btn.addEventListener('click', () => {
+        state.surfaces.splice(parseInt(btn.dataset.idx), 1);
+        renderStorefrontStep();
+        updateNextButton();
+      });
+    });
+    container.querySelector('.add-surface-btn').addEventListener('click', () => {
+      state.surfaces.push({ width: 0, height: 0 });
+      renderStorefrontStep();
+      updateNextButton();
+    });
+  }
 
   /* ============================================================
      Coverage tier cards
@@ -866,30 +936,40 @@
     const logoSvcLabel = state.logoService === 'vectorize' ? 'Logo vectorizing (JPG→vector)' : 'Logo creation from scratch';
 
     if (state.quoteType === 'dimension') {
-      const sqft = 2 * (state.dimLength * state.dimHeight) + 2 * (state.dimWidth * state.dimHeight);
+      const frontFactor = state.dimWrapFront ? 2 : 1;
+      const sqft = 2 * (state.dimLength * state.dimHeight) + frontFactor * (state.dimWidth * state.dimHeight);
+      const frontNote = state.dimWrapFront ? 'both sides + front + back' : 'both sides + back only';
       const designFee = state.needsDesign ? DESIGN_FEE : 0;
       const low = sqft * RATE_LOW + designFee + logoSvcFee;
       const high = sqft * RATE_HIGH + designFee + logoSvcFee;
       return {
         vehicleLine: `Box Truck / Trailer — ${state.dimLength}ft × ${state.dimHeight}ft × ${state.dimWidth}ft`,
         low, high, baseLow: sqft * RATE_LOW, baseHigh: sqft * RATE_HIGH,
-        baseLabel: 'Box truck / trailer wrap',
+        baseLabel: `Box truck / trailer wrap (${frontNote})`,
         designFee, logoFee: 0, logoLabel: '', logoSvcFee, logoSvcLabel,
-        windowLow: 0, windowHigh: 0,
+        windowLow: 0, windowHigh: 0, surfaceItems: null,
       };
     }
 
     if (state.quoteType === 'storefront') {
-      const sqft = state.storeWidth * state.storeHeight;
+      const surfaceItems = state.surfaces.map((s, i) => ({
+        label: `Surface ${i + 1} (${s.width} × ${s.height} ft)`,
+        sqft: s.width * s.height,
+        low: s.width * s.height * RATE_LOW,
+        high: s.width * s.height * RATE_HIGH,
+      }));
       const designFee = state.needsDesign ? DESIGN_FEE : 0;
-      const low = sqft * RATE_LOW + designFee + logoSvcFee;
-      const high = sqft * RATE_HIGH + designFee + logoSvcFee;
+      const baseLow = surfaceItems.reduce((a, s) => a + s.low, 0);
+      const baseHigh = surfaceItems.reduce((a, s) => a + s.high, 0);
+      const low = baseLow + designFee + logoSvcFee;
+      const high = baseHigh + designFee + logoSvcFee;
+      const dims = state.surfaces.map(s => `${s.width}×${s.height} ft`).join(', ');
       return {
-        vehicleLine: `Storefront / Wall Graphics — ${state.storeWidth}ft × ${state.storeHeight}ft`,
-        low, high, baseLow: sqft * RATE_LOW, baseHigh: sqft * RATE_HIGH,
+        vehicleLine: `Storefront / Wall Graphics — ${state.surfaces.length} surface${state.surfaces.length > 1 ? 's' : ''}`,
+        low, high, baseLow, baseHigh,
         baseLabel: 'Storefront / wall graphics',
         designFee, logoFee: 0, logoLabel: '', logoSvcFee, logoSvcLabel,
-        windowLow: 0, windowHigh: 0,
+        windowLow: 0, windowHigh: 0, surfaceItems,
       };
     }
 
@@ -948,7 +1028,15 @@
       <div class="price-range">${fmtMoney(p.low)}<span class="sep">–</span>${fmtMoney(p.high)}</div>
       <div class="price-note">Includes premium vinyl and professional installation</div>`;
 
-    const rows = [`<div class="row"><span>${p.baseLabel}</span><span>${fmtMoney(p.baseLow)}–${fmtMoney(p.baseHigh)}</span></div>`];
+    // Build breakdown rows — itemize surfaces if storefront
+    let rows = [];
+    if (p.surfaceItems && p.surfaceItems.length > 0) {
+      p.surfaceItems.forEach(s => {
+        rows.push(`<div class="row"><span>${s.label}</span><span>${fmtMoney(s.low)}–${fmtMoney(s.high)}</span></div>`);
+      });
+    } else {
+      rows.push(`<div class="row"><span>${p.baseLabel}</span><span>${fmtMoney(p.baseLow)}–${fmtMoney(p.baseHigh)}</span></div>`);
+    }
     if (p.designFee > 0)  rows.push(`<div class="row"><span>In-house design</span><span>+${fmtMoney(p.designFee)}</span></div>`);
     if (p.logoFee > 0)    rows.push(`<div class="row"><span>${p.logoLabel}</span><span>+${fmtMoney(p.logoFee)}</span></div>`);
     if (p.logoSvcFee > 0) rows.push(`<div class="row"><span>${p.logoSvcLabel}</span><span>+${fmtMoney(p.logoSvcFee)}</span></div>`);
@@ -971,7 +1059,7 @@
         if ($('variantField').style.display !== 'none' && !state.selVariant) return false;
         return true;
       case 'dimensions': return state.dimLength > 0 && state.dimHeight > 0 && state.dimWidth > 0;
-      case 'storefront': return state.storeWidth > 0 && state.storeHeight > 0;
+      case 'storefront': return state.surfaces.length > 0 && state.surfaces.every(s => s.width > 0 && s.height > 0);
       default:           return true;
     }
   }
@@ -1011,10 +1099,11 @@
     $('progressFill').style.width = `${((idx + 1) / route.length) * 100}%`;
 
     // Per-step renders
-    if (stepId === 'coverage') { renderTierGrid(); renderTierTabs(); }
-    if (stepId === 'design')   renderDesignStep();
-    if (stepId === 'addons')   renderAddons();
-    if (stepId === 'price')    renderQuote();
+    if (stepId === 'storefront') renderStorefrontStep();
+    if (stepId === 'coverage')   { renderTierGrid(); renderTierTabs(); }
+    if (stepId === 'design')     renderDesignStep();
+    if (stepId === 'addons')     renderAddons();
+    if (stepId === 'price')      renderQuote();
 
     updateNextButton();
     window.scrollTo({ top: 0, behavior: 'smooth' });
