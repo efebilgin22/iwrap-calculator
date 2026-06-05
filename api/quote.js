@@ -224,6 +224,16 @@ export default async function handler(req, res) {
     if (!process.env.KLAVIYO_API_KEY) return;
     const { vehicleStr, coverageStr, priceStr } = parseQuote(quote_summary, quote_breakdown);
     const [firstName, ...rest] = (name || '').trim().split(' ');
+
+    // Normalize phone to E.164 format (+1XXXXXXXXXX)
+    let formattedPhone;
+    if (phone) {
+      const digits = phone.replace(/\D/g, '');
+      if (digits.length === 10) formattedPhone = `+1${digits}`;
+      else if (digits.length === 11 && digits.startsWith('1')) formattedPhone = `+${digits}`;
+      else formattedPhone = `+${digits}`;
+    }
+
     const headers = {
       'Authorization': `Klaviyo-API-Key ${process.env.KLAVIYO_API_KEY}`,
       'Content-Type': 'application/json',
@@ -241,7 +251,7 @@ export default async function handler(req, res) {
               email,
               first_name: firstName || '',
               last_name: rest.join(' ') || '',
-              phone_number: phone || undefined,
+              phone_number: formattedPhone || undefined,
               properties: {
                 vehicle: vehicleStr,
                 coverage: coverageStr,
