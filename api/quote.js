@@ -247,48 +247,60 @@ export default async function handler(req, res) {
       'Content-Type': 'application/json',
       'revision': '2024-02-15',
     };
+    const profileAttributes = {
+      email,
+      first_name: firstName || '',
+      last_name: rest.join(' ') || '',
+      ...(formattedPhone && { phone_number: formattedPhone }),
+      location: {
+        ...(geoCity    && { city: geoCity }),
+        ...(geoRegion  && { region: geoRegion }),
+        ...(geoCountry && { country: geoCountry }),
+        ...(geoLat     && { latitude: geoLat }),
+        ...(geoLon     && { longitude: geoLon }),
+      },
+      properties: {
+        vehicle: vehicleStr,
+        coverage: coverageStr,
+        quote_range: priceStr,
+        contact_preference: contact_pref,
+        source: 'iWrap NY Quote Calculator',
+      },
+    };
+
     try {
-      // 1. Create or update the profile
-      const profileRes = await fetch('https://a.klaviyo.com/api/profiles/', {
+      // 1. Try to create profile
+      let profileId;
+      const createRes = await fetch('https://a.klaviyo.com/api/profiles/', {
         method: 'POST',
         headers,
-        body: JSON.stringify({
-          data: {
-            type: 'profile',
-            attributes: {
-              email,
-              first_name: firstName || '',
-              last_name: rest.join(' ') || '',
-              phone_number: formattedPhone || undefined,
-              location: {
-                city: geoCity,
-                region: geoRegion,
-                country: geoCountry,
-                latitude: geoLat,
-                longitude: geoLon,
-              },
-              properties: {
-                vehicle: vehicleStr,
-                coverage: coverageStr,
-                quote_range: priceStr,
-                contact_preference: contact_pref,
-                source: 'iWrap NY Quote Calculator',
-              },
-            },
-          },
-        }),
+        body: JSON.stringify({ data: { type: 'profile', attributes: profileAttributes } }),
       });
-      const profileData = await profileRes.json();
-      const profileId = profileData?.data?.id;
 
-      // 2. Add profile to Quote Leads list only if they consented
+      if (createRes.status === 201) {
+        // New profile created
+        const created = await createRes.json();
+        profileId = created?.data?.id;
+
+      } else if (createRes.status === 409) {
+        // Profile already exists — extract ID and PATCH with latest data
+        const conflict = await createRes.json();
+        profileId = conflict?.errors?.[0]?.meta?.duplicate_profile_id;
+        if (profileId) {
+          await fetch(`https://a.klaviyo.com/api/profiles/${profileId}/`, {
+            method: 'PATCH',
+            headers,
+            body: JSON.stringify({ data: { type: 'profile', id: profileId, attributes: profileAttributes } }),
+          });
+        }
+      }
+
+      // 2. Add to Quote Leads list only if consented
       if (profileId && hasConsent) {
         await fetch(`https://a.klaviyo.com/api/lists/UguvA9/relationships/profiles/`, {
           method: 'POST',
           headers,
-          body: JSON.stringify({
-            data: [{ type: 'profile', id: profileId }],
-          }),
+          body: JSON.stringify({ data: [{ type: 'profile', id: profileId }] }),
         });
       }
     } catch (e) {
