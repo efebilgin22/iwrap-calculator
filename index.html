@@ -261,6 +261,20 @@
   .footer-note a { color: var(--brand); text-decoration: none; }
   .footer-note a:hover { text-decoration: underline; }
 
+  /* ---- Unit selector (ft / in) ---- */
+  .unit-row { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 1.25rem; padding-bottom: 1.25rem; border-bottom: 1px solid var(--border); }
+  .unit-label { font-size: 0.9rem; font-weight: 600; color: var(--ink); }
+  .unit-btns { display: flex; gap: 0.4rem; }
+  .unit-btn { background: var(--bg); border: 1.5px solid var(--border); border-radius: 8px; padding: 0.45rem 0.9rem; font-size: 0.88rem; font-weight: 600; color: var(--muted); cursor: pointer; font-family: inherit; transition: all 0.12s; }
+  .unit-btn.active { background: var(--ink); color: white; border-color: var(--ink); }
+
+  /* ---- Panel section (box truck) ---- */
+  .panel-section { margin-bottom: 1.1rem; }
+  .panel-section-header { display: flex; align-items: baseline; gap: 0.5rem; margin-bottom: 0.5rem; }
+  .panel-section-label { font-size: 0.92rem; font-weight: 700; color: var(--ink); }
+  .panel-note { font-size: 0.8rem; color: var(--muted); font-weight: 400; }
+  .panel-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+
   /* ---- Front panel toggle (box truck) ---- */
   .front-toggle { margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border); }
   .front-label { font-size: 0.9rem; font-weight: 600; color: var(--ink); margin-bottom: 0.5rem; }
@@ -357,33 +371,10 @@
     <div class="step-header">
       <img src="logo.png" alt="iWrap NY" class="site-logo" />
       <div class="step-label" id="lbl-dimensions"></div>
-      <h1 class="step-title">Enter your vehicle dimensions</h1>
-      <p class="step-subtitle">We'll calculate the total wrappable surface — both sides, front, and back panels.</p>
+      <h1 class="step-title">Enter your panel dimensions</h1>
+      <p class="step-subtitle">Measure each panel separately for the most accurate quote.</p>
     </div>
-    <div class="form-card">
-      <div class="field">
-        <label for="dimLength">Vehicle length <span class="optional">(ft)</span></label>
-        <input type="number" id="dimLength" min="1" max="100" placeholder="e.g. 16" />
-      </div>
-      <div class="field">
-        <label for="dimHeight">Side height <span class="optional">(ft)</span></label>
-        <input type="number" id="dimHeight" min="1" max="30" placeholder="e.g. 8" />
-      </div>
-      <div class="field">
-        <label for="dimWidth">Vehicle width <span class="optional">(ft)</span></label>
-        <input type="number" id="dimWidth" min="1" max="20" placeholder="e.g. 7" />
-      </div>
-      <div class="dim-note">
-        Total wrap area calculated from your dimensions below.
-      </div>
-      <div class="front-toggle">
-        <div class="front-label">Wrap the front panel (cab face)?</div>
-        <div class="front-btns">
-          <button type="button" class="ft-btn active" data-front="yes">Yes, include front</button>
-          <button type="button" class="ft-btn" data-front="no">Sides + back only</button>
-        </div>
-      </div>
-    </div>
+    <div id="dimForm"></div>
   </section>
 
   <!-- ====== STEP: storefront ====== -->
@@ -525,10 +516,14 @@
     // design (shared)
     needsDesign: false,
     logoStatus: 'vector',  // for lettering
-    // dimension path
-    dimLength: 0, dimHeight: 0, dimWidth: 0,
+    // dimension path (box truck / trailer)
+    dimUnit: 'ft',
+    dimSideLength: 0, dimSideHeight: 0,
+    dimRearWidth: 0, dimRearHeight: 0,
+    dimFrontWidth: 0, dimFrontHeight: 0,
     dimWrapFront: true,
     // storefront path
+    storeUnit: 'ft',
     surfaces: [{ width: 0, height: 0 }],
   };
 
@@ -638,31 +633,123 @@
   }
 
   /* ============================================================
-     Dimension inputs (box truck)
+     Box truck: dynamic dimension form
   ============================================================ */
-  ['dimLength', 'dimHeight', 'dimWidth'].forEach(id => {
-    $(id).addEventListener('input', () => {
-      state[id] = parseFloat($(id).value) || 0;
-      updateNextButton();
-    });
-  });
+  function toSqft(a, b, unit) {
+    if (!a || !b) return 0;
+    return unit === 'in' ? (a * b) / 144 : a * b;
+  }
 
-  // Front panel toggle
-  document.querySelectorAll('.ft-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.ft-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      state.dimWrapFront = btn.dataset.front === 'yes';
+  function renderDimensionsStep() {
+    const u = state.dimUnit;
+    const uLabel = u === 'in' ? 'inches' : 'feet';
+    const uShort = u === 'in' ? 'in' : 'ft';
+    const ph = u === 'in' ? { sl: 'e.g. 192', sh: 'e.g. 96', rw: 'e.g. 84', rh: 'e.g. 96', fw: 'e.g. 84', fh: 'e.g. 96' }
+                          : { sl: 'e.g. 16',  sh: 'e.g. 8',  rw: 'e.g. 7',  rh: 'e.g. 8',  fw: 'e.g. 7',  fh: 'e.g. 8' };
+
+    const field = (label, id, placeholder, val) => `
+      <div class="field">
+        <label>${label} <span class="optional">(${uShort})</span></label>
+        <input type="number" id="${id}" min="0.1" placeholder="${placeholder}" value="${val || ''}" step="any"/>
+      </div>`;
+
+    $('dimForm').innerHTML = `
+      <div class="form-card">
+        <div class="unit-row">
+          <span class="unit-label">Enter dimensions in:</span>
+          <div class="unit-btns">
+            <button type="button" class="unit-btn ${u==='ft'?'active':''}" data-unit="ft">Feet (ft)</button>
+            <button type="button" class="unit-btn ${u==='in'?'active':''}" data-unit="in">Inches (in)</button>
+          </div>
+        </div>
+
+        <div class="panel-section">
+          <div class="panel-section-header">
+            <span class="panel-section-label">Side panels</span>
+            <span class="panel-note">× 2 — both sides are the same size</span>
+          </div>
+          <div class="panel-fields">
+            ${field('Length', 'dimSideLength', ph.sl, state.dimSideLength || '')}
+            ${field('Height', 'dimSideHeight', ph.sh, state.dimSideHeight || '')}
+          </div>
+        </div>
+
+        <div class="panel-section">
+          <div class="panel-section-header">
+            <span class="panel-section-label">Rear panel</span>
+            <span class="panel-note">back of the box</span>
+          </div>
+          <div class="panel-fields">
+            ${field('Width', 'dimRearWidth', ph.rw, state.dimRearWidth || '')}
+            ${field('Height', 'dimRearHeight', ph.rh, state.dimRearHeight || '')}
+          </div>
+        </div>
+
+        <div class="front-toggle">
+          <div class="front-label">Wrap the front panel?</div>
+          <div class="front-btns">
+            <button type="button" class="ft-btn ${state.dimWrapFront?'active':''}" data-front="yes">Yes, include front</button>
+            <button type="button" class="ft-btn ${!state.dimWrapFront?'active':''}" data-front="no">Sides + back only</button>
+          </div>
+        </div>
+
+        ${state.dimWrapFront ? `
+        <div class="panel-section" style="margin-top:1rem;">
+          <div class="panel-section-header">
+            <span class="panel-section-label">Front panel</span>
+          </div>
+          <div class="panel-fields">
+            ${field('Width', 'dimFrontWidth', ph.fw, state.dimFrontWidth || '')}
+            ${field('Height', 'dimFrontHeight', ph.fh, state.dimFrontHeight || '')}
+          </div>
+        </div>` : ''}
+      </div>`;
+
+    // Unit toggle
+    $('dimForm').querySelectorAll('.unit-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        state.dimUnit = btn.dataset.unit;
+        renderDimensionsStep();
+      });
     });
-  });
+
+    // Front toggle
+    $('dimForm').querySelectorAll('.ft-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        state.dimWrapFront = btn.dataset.front === 'yes';
+        renderDimensionsStep();
+        updateNextButton();
+      });
+    });
+
+    // Number inputs
+    ['dimSideLength','dimSideHeight','dimRearWidth','dimRearHeight','dimFrontWidth','dimFrontHeight'].forEach(id => {
+      const el = $(id);
+      if (el) el.addEventListener('input', () => {
+        state[id] = parseFloat(el.value) || 0;
+        updateNextButton();
+      });
+    });
+  }
 
   /* ============================================================
      Storefront: multiple surfaces
   ============================================================ */
   function renderStorefrontStep() {
     const container = $('storefrontForm');
+    const u = state.storeUnit;
+    const uShort = u === 'in' ? 'in' : 'ft';
+    const ph = u === 'in' ? { w: 'e.g. 240', h: 'e.g. 96' } : { w: 'e.g. 20', h: 'e.g. 8' };
+
     container.innerHTML = `
       <div class="form-card">
+        <div class="unit-row">
+          <span class="unit-label">Enter dimensions in:</span>
+          <div class="unit-btns">
+            <button type="button" class="unit-btn ${u==='ft'?'active':''}" data-storeunit="ft">Feet (ft)</button>
+            <button type="button" class="unit-btn ${u==='in'?'active':''}" data-storeunit="in">Inches (in)</button>
+          </div>
+        </div>
         ${state.surfaces.map((s, i) => `
           <div class="surface-item" data-idx="${i}">
             <div class="surface-header">
@@ -671,18 +758,25 @@
             </div>
             <div class="surface-fields">
               <div class="field">
-                <label>Width <span class="optional">(ft)</span></label>
-                <input type="number" class="surf-w" data-idx="${i}" min="1" placeholder="e.g. 20" value="${s.width || ''}" />
+                <label>Width <span class="optional">(${uShort})</span></label>
+                <input type="number" class="surf-w" data-idx="${i}" min="0.1" step="any" placeholder="${ph.w}" value="${s.width || ''}" />
               </div>
               <div class="field">
-                <label>Height <span class="optional">(ft)</span></label>
-                <input type="number" class="surf-h" data-idx="${i}" min="1" placeholder="e.g. 8" value="${s.height || ''}" />
+                <label>Height <span class="optional">(${uShort})</span></label>
+                <input type="number" class="surf-h" data-idx="${i}" min="0.1" step="any" placeholder="${ph.h}" value="${s.height || ''}" />
               </div>
             </div>
           </div>`).join('')}
         <button type="button" class="add-surface-btn">+ Add another surface</button>
       </div>`;
 
+    // Unit toggle
+    container.querySelectorAll('[data-storeunit]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        state.storeUnit = btn.dataset.storeunit;
+        renderStorefrontStep();
+      });
+    });
     container.querySelectorAll('.surf-w').forEach(el => {
       el.addEventListener('input', () => {
         state.surfaces[parseInt(el.dataset.idx)].width = parseFloat(el.value) || 0;
@@ -936,28 +1030,39 @@
     const logoSvcLabel = state.logoService === 'vectorize' ? 'Logo vectorizing (JPG→vector)' : 'Logo creation from scratch';
 
     if (state.quoteType === 'dimension') {
-      const frontFactor = state.dimWrapFront ? 2 : 1;
-      const sqft = 2 * (state.dimLength * state.dimHeight) + frontFactor * (state.dimWidth * state.dimHeight);
-      const frontNote = state.dimWrapFront ? 'both sides + front + back' : 'both sides + back only';
+      const u = state.dimUnit;
+      const sides = 2 * toSqft(state.dimSideLength, state.dimSideHeight, u);
+      const rear  = toSqft(state.dimRearWidth, state.dimRearHeight, u);
+      const front = state.dimWrapFront ? toSqft(state.dimFrontWidth, state.dimFrontHeight, u) : 0;
+      const sqft  = sides + rear + front;
+      const uLabel = u === 'in' ? 'in' : 'ft';
+      const frontNote = state.dimWrapFront ? '2 sides + front + back' : '2 sides + back only';
       const designFee = state.needsDesign ? DESIGN_FEE : 0;
-      const low = sqft * RATE_LOW + designFee + logoSvcFee;
+      const low  = sqft * RATE_LOW + designFee + logoSvcFee;
       const high = sqft * RATE_HIGH + designFee + logoSvcFee;
+      const dimStr = `sides ${state.dimSideLength}×${state.dimSideHeight}${uLabel}, rear ${state.dimRearWidth}×${state.dimRearHeight}${uLabel}${state.dimWrapFront ? `, front ${state.dimFrontWidth}×${state.dimFrontHeight}${uLabel}` : ''}`;
       return {
-        vehicleLine: `Box Truck / Trailer — ${state.dimLength}ft × ${state.dimHeight}ft × ${state.dimWidth}ft`,
+        vehicleLine: `Box Truck / Trailer`,
         low, high, baseLow: sqft * RATE_LOW, baseHigh: sqft * RATE_HIGH,
-        baseLabel: `Box truck / trailer wrap (${frontNote})`,
+        baseLabel: `Box truck wrap (${frontNote})`,
         designFee, logoFee: 0, logoLabel: '', logoSvcFee, logoSvcLabel,
         windowLow: 0, windowHigh: 0, surfaceItems: null,
+        dimStr,
       };
     }
 
     if (state.quoteType === 'storefront') {
-      const surfaceItems = state.surfaces.map((s, i) => ({
-        label: `Surface ${i + 1} (${s.width} × ${s.height} ft)`,
-        sqft: s.width * s.height,
-        low: s.width * s.height * RATE_LOW,
-        high: s.width * s.height * RATE_HIGH,
-      }));
+      const u = state.storeUnit;
+      const uLabel = u === 'in' ? 'in' : 'ft';
+      const surfaceItems = state.surfaces.map((s, i) => {
+        const sqft = toSqft(s.width, s.height, u);
+        return {
+          label: `Surface ${i + 1} (${s.width} × ${s.height} ${uLabel})`,
+          sqft,
+          low: sqft * RATE_LOW,
+          high: sqft * RATE_HIGH,
+        };
+      });
       const designFee = state.needsDesign ? DESIGN_FEE : 0;
       const baseLow = surfaceItems.reduce((a, s) => a + s.low, 0);
       const baseHigh = surfaceItems.reduce((a, s) => a + s.high, 0);
@@ -1058,7 +1163,12 @@
         if (!state.selMake || !state.selModel || !state.selYear) return false;
         if ($('variantField').style.display !== 'none' && !state.selVariant) return false;
         return true;
-      case 'dimensions': return state.dimLength > 0 && state.dimHeight > 0 && state.dimWidth > 0;
+      case 'dimensions': {
+        const sidesOk = state.dimSideLength > 0 && state.dimSideHeight > 0;
+        const rearOk = state.dimRearWidth > 0 && state.dimRearHeight > 0;
+        const frontOk = !state.dimWrapFront || (state.dimFrontWidth > 0 && state.dimFrontHeight > 0);
+        return sidesOk && rearOk && frontOk;
+      }
       case 'storefront': return state.surfaces.length > 0 && state.surfaces.every(s => s.width > 0 && s.height > 0);
       default:           return true;
     }
@@ -1099,7 +1209,8 @@
     $('progressFill').style.width = `${((idx + 1) / route.length) * 100}%`;
 
     // Per-step renders
-    if (stepId === 'storefront') renderStorefrontStep();
+    if (stepId === 'dimensions')  renderDimensionsStep();
+    if (stepId === 'storefront')  renderStorefrontStep();
     if (stepId === 'coverage')   { renderTierGrid(); renderTierTabs(); }
     if (stepId === 'design')     renderDesignStep();
     if (stepId === 'addons')     renderAddons();
