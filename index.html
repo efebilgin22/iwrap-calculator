@@ -232,6 +232,9 @@
   .lead-form .full { grid-column: 1 / -1; }
   @media (max-width: 600px) { .lead-form { grid-template-columns: 1fr; } }
   .lead-form h3 { font-size: 1.05rem; font-weight: 700; color: var(--ink); margin-bottom: 0.5rem; }
+  .marketing-consent { display: flex; align-items: flex-start; gap: 0.6rem; cursor: pointer; }
+  .marketing-consent input[type="checkbox"] { margin-top: 3px; accent-color: var(--brand); width: 15px; height: 15px; flex-shrink: 0; cursor: pointer; }
+  .marketing-consent span { font-size: 0.8rem; color: var(--muted); line-height: 1.5; }
 
   .contact-pref-label { font-size: 0.9rem; font-weight: 600; color: var(--ink); margin-bottom: 0.5rem; }
   .contact-pref-options { display: flex; gap: 0.5rem; flex-wrap: wrap; }
@@ -470,6 +473,10 @@
       </div>
       <input type="hidden" name="quote_summary" id="quoteSummary" />
       <input type="hidden" name="quote_breakdown" id="quoteBreakdown" />
+      <label class="marketing-consent full">
+        <input type="checkbox" name="marketing_consent" id="marketingConsent" />
+        <span>I agree to receive promotional emails and SMS messages from iWrap NY about wrap deals, tips, and offers. You can unsubscribe at any time.</span>
+      </label>
       <button type="submit" class="btn btn-primary full">Send my quote</button>
     </form>
   </section>

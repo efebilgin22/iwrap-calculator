@@ -213,7 +213,8 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { name, phone, email, contact_pref, quote_summary, quote_breakdown } = req.body;
+  const { name, phone, email, contact_pref, quote_summary, quote_breakdown, marketing_consent } = req.body;
+  const hasConsent = marketing_consent === 'on' || marketing_consent === 'true' || marketing_consent === true;
 
   if (!email || !quote_summary) {
     return res.status(400).json({ error: 'Missing required fields' });
@@ -266,8 +267,8 @@ export default async function handler(req, res) {
       const profileData = await profileRes.json();
       const profileId = profileData?.data?.id;
 
-      // 2. Add profile to Quote Leads list
-      if (profileId) {
+      // 2. Add profile to Quote Leads list only if they consented
+      if (profileId && hasConsent) {
         await fetch(`https://a.klaviyo.com/api/lists/UguvA9/relationships/profiles/`, {
           method: 'POST',
           headers,
