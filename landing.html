@@ -61,18 +61,11 @@
 
   /* ── HERO ── */
   .hero {
-    background: url('header_image.webp') center top / 100% auto no-repeat;
+    background: url('header_image.webp') center top / 100% auto no-repeat, url('mosaic.webp') center center / cover no-repeat;
     padding: 5rem 1.5rem 5.5rem;
     text-align: center;
     position: relative;
     overflow: hidden;
-  }
-  .hero-mosaic-bg {
-    position: absolute;
-    top: 56.25vw;
-    left: 0; right: 0; bottom: 0;
-    background: url('mosaic.webp') center top / cover no-repeat;
-    z-index: 0;
   }
   .hero::before {
     content: '';
@@ -342,7 +335,6 @@
 
 <!-- HERO -->
 <section class="hero" id="hero">
-  <div class="hero-mosaic-bg"></div>
   <div class="hero-eyebrow">Long Island's Commercial Wrap Specialists</div>
   <h1>Turn Your Vehicle Into a <em>Rolling Billboard</em></h1>
   <p class="hero-sub">
