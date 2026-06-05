@@ -102,11 +102,22 @@ function buildBusinessEmail({ name, phone, email, contact_pref, quote_summary, q
     </td></tr>
 
     <!-- Footer -->
-    <tr><td style="background:${BRAND_DARK};padding:20px 36px;">
-      <p style="margin:0;font-size:12px;color:rgba(255,255,255,0.4);text-align:center;">
-        Submitted via the iWrap NY quote tool &nbsp;·&nbsp;
-        <a href="https://iwrapny.com" style="color:${BRAND_ORANGE};text-decoration:none;">iwrapny.com</a>
-      </p>
+    <tr><td style="background:${BRAND_DARK};padding:24px 36px;">
+      <table width="100%" cellpadding="0" cellspacing="0">
+        <tr><td style="text-align:center;padding-bottom:10px;">
+          <a href="https://iwrapny.com" style="color:${BRAND_ORANGE};text-decoration:none;font-size:13px;font-weight:700;">iwrapny.com</a>
+          &nbsp;<span style="color:rgba(255,255,255,0.2);">|</span>&nbsp;
+          <a href="tel:+16312122329" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">+1 (631) 212-2329</a>
+        </td></tr>
+        <tr><td style="text-align:center;padding-bottom:10px;">
+          <a href="https://maps.google.com/?q=657+Old+Willets+Path,+Hauppauge,+NY+11788" style="color:rgba(255,255,255,0.5);text-decoration:none;font-size:12px;">
+            📍 657 Old Willets Path, Hauppauge, NY 11788
+          </a>
+        </td></tr>
+        <tr><td style="text-align:center;">
+          <a href="https://share.google/zlBaKDD6WTBxsieMd" style="color:rgba(255,255,255,0.4);text-decoration:none;font-size:12px;">⭐ See our Google reviews</a>
+        </td></tr>
+      </table>
     </td></tr>
 
   </table>
@@ -173,12 +184,22 @@ function buildCustomerEmail({ name, quote_summary, quote_breakdown }) {
     </td></tr>
 
     <!-- Footer -->
-    <tr><td style="background:${BRAND_DARK};padding:22px 36px;">
-      <p style="margin:0;font-size:12px;color:rgba(255,255,255,0.4);text-align:center;">
-        iWrap NY &nbsp;·&nbsp;
-        <a href="https://iwrapny.com" style="color:${BRAND_ORANGE};text-decoration:none;">iwrapny.com</a>
-        &nbsp;·&nbsp; New York
-      </p>
+    <tr><td style="background:${BRAND_DARK};padding:24px 36px;">
+      <table width="100%" cellpadding="0" cellspacing="0">
+        <tr><td style="text-align:center;padding-bottom:10px;">
+          <a href="https://iwrapny.com" style="color:${BRAND_ORANGE};text-decoration:none;font-size:13px;font-weight:700;">iwrapny.com</a>
+          &nbsp;<span style="color:rgba(255,255,255,0.2);">|</span>&nbsp;
+          <a href="tel:+16312122329" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;">+1 (631) 212-2329</a>
+        </td></tr>
+        <tr><td style="text-align:center;padding-bottom:10px;">
+          <a href="https://maps.google.com/?q=657+Old+Willets+Path,+Hauppauge,+NY+11788" style="color:rgba(255,255,255,0.5);text-decoration:none;font-size:12px;">
+            📍 657 Old Willets Path, Hauppauge, NY 11788
+          </a>
+        </td></tr>
+        <tr><td style="text-align:center;">
+          <a href="https://share.google/zlBaKDD6WTBxsieMd" style="color:rgba(255,255,255,0.4);text-decoration:none;font-size:12px;">⭐ See our Google reviews</a>
+        </td></tr>
+      </table>
     </td></tr>
 
   </table>
