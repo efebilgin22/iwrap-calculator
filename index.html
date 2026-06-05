@@ -903,7 +903,7 @@
         </div>
         <div class="option-card ${state.needsDesign?'active':''}" data-design="needed">
           <div class="name">I need design</div>
-          <div class="desc">+$400 design fee added to quote</div>
+          <div class="desc">${state.quoteType === 'storefront' ? 'Design fee quoted separately — varies by project scope' : '+$400 design fee added to quote'}</div>
         </div>`;
       banner.innerHTML = `<strong>Note:</strong> AI-generated images (Midjourney, ChatGPT, etc.) are <em>not</em> print-ready. They need to be redrawn and resized — that counts as "I need design."`;
       grid.querySelectorAll('[data-design]').forEach(c => {
@@ -1063,17 +1063,16 @@
           high: sqft * RATE_HIGH,
         };
       });
-      const designFee = state.needsDesign ? DESIGN_FEE : 0;
       const baseLow = surfaceItems.reduce((a, s) => a + s.low, 0);
       const baseHigh = surfaceItems.reduce((a, s) => a + s.high, 0);
-      const low = baseLow + designFee + logoSvcFee;
-      const high = baseHigh + designFee + logoSvcFee;
-      const dims = state.surfaces.map(s => `${s.width}×${s.height} ft`).join(', ');
+      const low = baseLow + logoSvcFee;
+      const high = baseHigh + logoSvcFee;
       return {
         vehicleLine: `Storefront / Wall Graphics — ${state.surfaces.length} surface${state.surfaces.length > 1 ? 's' : ''}`,
         low, high, baseLow, baseHigh,
         baseLabel: 'Storefront / wall graphics',
-        designFee, logoFee: 0, logoLabel: '', logoSvcFee, logoSvcLabel,
+        designFee: 0, designTBD: state.needsDesign,
+        logoFee: 0, logoLabel: '', logoSvcFee, logoSvcLabel,
         windowLow: 0, windowHigh: 0, surfaceItems,
       };
     }
@@ -1128,10 +1127,13 @@
     const p = computePrice();
     if (!p) return;
 
+    const priceNote = p.designTBD
+      ? 'Includes vinyl and installation. Design fee quoted separately.'
+      : 'Includes premium vinyl and professional installation';
     $('priceReveal').innerHTML = `
       <div class="vehicle-line">${p.vehicleLine}</div>
       <div class="price-range">${fmtMoney(p.low)}<span class="sep">–</span>${fmtMoney(p.high)}</div>
-      <div class="price-note">Includes premium vinyl and professional installation</div>`;
+      <div class="price-note">${priceNote}</div>`;
 
     // Build breakdown rows — itemize surfaces if storefront
     let rows = [];
@@ -1142,7 +1144,8 @@
     } else {
       rows.push(`<div class="row"><span>${p.baseLabel}</span><span>${fmtMoney(p.baseLow)}–${fmtMoney(p.baseHigh)}</span></div>`);
     }
-    if (p.designFee > 0)  rows.push(`<div class="row"><span>In-house design</span><span>+${fmtMoney(p.designFee)}</span></div>`);
+    if (p.designTBD)      rows.push(`<div class="row"><span>In-house design</span><span style="color:var(--brand);font-weight:600;">TBD</span></div>`);
+    else if (p.designFee > 0) rows.push(`<div class="row"><span>In-house design</span><span>+${fmtMoney(p.designFee)}</span></div>`);
     if (p.logoFee > 0)    rows.push(`<div class="row"><span>${p.logoLabel}</span><span>+${fmtMoney(p.logoFee)}</span></div>`);
     if (p.logoSvcFee > 0) rows.push(`<div class="row"><span>${p.logoSvcLabel}</span><span>+${fmtMoney(p.logoSvcFee)}</span></div>`);
     if (p.windowLow > 0)  rows.push(`<div class="row"><span>Perforated window wraps</span><span>+${fmtMoney(p.windowLow)}–${fmtMoney(p.windowHigh)}</span></div>`);
