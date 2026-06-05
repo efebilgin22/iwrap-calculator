@@ -216,6 +216,13 @@ export default async function handler(req, res) {
   const { name, phone, email, contact_pref, quote_summary, quote_breakdown, marketing_consent } = req.body;
   const hasConsent = marketing_consent === 'on' || marketing_consent === 'true' || marketing_consent === true;
 
+  // Vercel geo headers — automatically populated from visitor IP
+  const geoCity    = req.headers['x-vercel-ip-city'] ? decodeURIComponent(req.headers['x-vercel-ip-city']) : undefined;
+  const geoRegion  = req.headers['x-vercel-ip-country-region'] || undefined;
+  const geoCountry = req.headers['x-vercel-ip-country'] || undefined;
+  const geoLat     = req.headers['x-vercel-ip-latitude'] || undefined;
+  const geoLon     = req.headers['x-vercel-ip-longitude'] || undefined;
+
   if (!email || !quote_summary) {
     return res.status(400).json({ error: 'Missing required fields' });
   }
@@ -253,6 +260,13 @@ export default async function handler(req, res) {
               first_name: firstName || '',
               last_name: rest.join(' ') || '',
               phone_number: formattedPhone || undefined,
+              location: {
+                city: geoCity,
+                region: geoRegion,
+                country: geoCountry,
+                latitude: geoLat,
+                longitude: geoLon,
+              },
               properties: {
                 vehicle: vehicleStr,
                 coverage: coverageStr,
