@@ -224,14 +224,16 @@ export default async function handler(req, res) {
     if (!process.env.KLAVIYO_API_KEY) return;
     const { vehicleStr, coverageStr, priceStr } = parseQuote(quote_summary, quote_breakdown);
     const [firstName, ...rest] = (name || '').trim().split(' ');
+    const headers = {
+      'Authorization': `Klaviyo-API-Key ${process.env.KLAVIYO_API_KEY}`,
+      'Content-Type': 'application/json',
+      'revision': '2024-02-15',
+    };
     try {
-      await fetch('https://a.klaviyo.com/api/profiles/', {
+      // 1. Create or update the profile
+      const profileRes = await fetch('https://a.klaviyo.com/api/profiles/', {
         method: 'POST',
-        headers: {
-          'Authorization': `Klaviyo-API-Key ${process.env.KLAVIYO_API_KEY}`,
-          'Content-Type': 'application/json',
-          'revision': '2024-02-15',
-        },
+        headers,
         body: JSON.stringify({
           data: {
             type: 'profile',
@@ -251,6 +253,19 @@ export default async function handler(req, res) {
           },
         }),
       });
+      const profileData = await profileRes.json();
+      const profileId = profileData?.data?.id;
+
+      // 2. Add profile to Quote Leads list
+      if (profileId) {
+        await fetch(`https://a.klaviyo.com/api/lists/UguvA9/relationships/profiles/`, {
+          method: 'POST',
+          headers,
+          body: JSON.stringify({
+            data: [{ type: 'profile', id: profileId }],
+          }),
+        });
+      }
     } catch (e) {
       console.error('Klaviyo sync error:', e);
     }
