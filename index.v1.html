@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Commercial Vehicle Wrap Quote — iWrap NY</title>
+<style>
+  :root {
+    --bg: #0b0d10;
+    --surface: #14171c;
+    --surface-2: #1c2026;
+    --border: #2a2f37;
+    --text: #f5f6f7;
+    --muted: #9aa2ad;
+    --muted-2: #6b7280;
+    --accent: #ff4a2b;
+    --accent-soft: #ff6f55;
+    --accent-dark: #d83612;
+    --success: #34d399;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Inter, sans-serif;
+    background:
+      radial-gradient(circle at top right, rgba(255, 74, 43, 0.12), transparent 30rem),
+      linear-gradient(135deg, #0b0d10 0%, #14171c 60%, #0b0d10 100%);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 1.5rem 1rem;
+    line-height: 1.5;
+  }
+
+  .container { max-width: 720px; margin: 0 auto; }
+
+  .header { text-align: center; margin-bottom: 2rem; }
+  .header h1 {
+    font-size: clamp(1.6rem, 4vw, 2.4rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.5rem;
+  }
+  .header h1 .brand { color: var(--accent); white-space: nowrap; }
+  .header p { color: var(--muted); font-size: 1rem; }
+  .header .header-note {
+    font-size: 0.85rem;
+    margin-top: 0.4rem;
+    color: var(--muted-2);
+  }
+  .header .header-link {
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px dotted var(--accent);
+  }
+  .header .header-link:hover { color: var(--accent-soft); }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .step-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--accent);
+    margin-bottom: 0.75rem;
+  }
+
+  .selector-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+  }
+  .selector-grid.has-variant { grid-template-columns: repeat(4, 1fr); }
+  @media (max-width: 600px) {
+    .selector-grid, .selector-grid.has-variant { grid-template-columns: 1fr 1fr; }
+  }
+
+  .field label {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--muted);
+    margin-bottom: 0.3rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  select, input {
+    width: 100%;
+    background: var(--surface-2);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.7rem 0.8rem;
+    font-size: 0.95rem;
+    font-family: inherit;
+    appearance: none;
+  }
+  select:focus, input:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+  select:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .coverage-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+  }
+  @media (max-width: 600px) { .coverage-grid { grid-template-columns: 1fr; } }
+
+  .coverage-option {
+    background: var(--surface-2);
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    padding: 1rem;
+    cursor: pointer;
+    transition: border-color 0.15s, transform 0.05s;
+    text-align: left;
+  }
+  .coverage-option:hover { border-color: var(--accent-soft); }
+  .coverage-option:active { transform: scale(0.99); }
+  .coverage-option.active {
+    border-color: var(--accent);
+    background: linear-gradient(135deg, rgba(255, 74, 43, 0.10), transparent);
+  }
+  .coverage-option .name { font-weight: 700; margin-bottom: 0.2rem; }
+  .coverage-option .desc { font-size: 0.8rem; color: var(--muted); }
+
+  .roof-toggle {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .roof-toggle .label {
+    font-size: 0.9rem;
+    color: var(--text);
+  }
+  .roof-toggle .label .savings {
+    display: block;
+    font-size: 0.78rem;
+    color: var(--muted);
+    margin-top: 0.15rem;
+  }
+  .roof-buttons {
+    display: inline-flex;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .roof-buttons button {
+    background: transparent;
+    color: var(--muted);
+    border: none;
+    padding: 0.55rem 1rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .roof-buttons button.active {
+    background: var(--accent);
+    color: white;
+  }
+
+  .design-note {
+    margin-top: 1rem;
+    padding: 0.85rem 1rem;
+    background: rgba(255, 74, 43, 0.08);
+    border: 1px solid rgba(255, 74, 43, 0.3);
+    border-radius: 8px;
+    font-size: 0.85rem;
+    color: var(--muted);
+    line-height: 1.45;
+  }
+  .design-note strong { color: var(--text); }
+  .design-note em { color: var(--text); font-style: normal; font-weight: 600; }
+
+  .price-card {
+    background: linear-gradient(135deg, var(--surface) 0%, var(--surface-2) 100%);
+    border: 1px solid var(--accent);
+    border-radius: 14px;
+    padding: 2rem 1.5rem;
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+  .price-card .vehicle-line {
+    color: var(--muted);
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+  }
+  .price-card .price-range {
+    font-size: clamp(2rem, 6vw, 3rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+  }
+  .price-card .price-range .sep { color: var(--muted-2); margin: 0 0.5rem; font-weight: 400; }
+  .price-card .price-note {
+    color: var(--muted);
+    font-size: 0.85rem;
+  }
+
+  .placeholder {
+    text-align: center;
+    color: var(--muted-2);
+    padding: 2rem 1rem;
+    font-size: 0.95rem;
+  }
+
+  .lead-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+  }
+  .lead-form .full { grid-column: 1 / -1; }
+  @media (max-width: 600px) { .lead-form { grid-template-columns: 1fr; } }
+
+  .btn {
+    width: 100%;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 0.95rem 1rem;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.05s;
+  }
+  .btn:hover { background: var(--accent-dark); }
+  .btn:active { transform: scale(0.99); }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .success-msg {
+    background: rgba(52, 211, 153, 0.1);
+    border: 1px solid var(--success);
+    color: var(--success);
+    padding: 1rem;
+    border-radius: 8px;
+    text-align: center;
+    font-weight: 600;
+  }
+
+  .footnote {
+    text-align: center;
+    color: var(--muted-2);
+    font-size: 0.8rem;
+    margin-top: 1.5rem;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="header">
+    <h1>Commercial Vehicle Wrap Quote <span class="brand">iWrap NY</span></h1>
+    <p>Branding, graphics, and lettering for work vehicles. Pick your vehicle and coverage for an instant price range.</p>
+    <p class="header-note">Color-change wraps are a separate service — please <a href="#" class="header-link">contact us directly</a> for those.</p>
+  </div>
+
+  <!-- Step 1: Vehicle -->
+  <div class="card">
+    <div class="step-label">1. Your vehicle</div>
+    <div class="selector-grid" id="selectorGrid">
+      <div class="field">
+        <label for="selMake">Make</label>
+        <select id="selMake"><option value="">— make —</option></select>
+      </div>
+      <div class="field">
+        <label for="selModel">Model</label>
+        <select id="selModel" disabled><option value="">— model —</option></select>
+      </div>
+      <div class="field">
+        <label for="selYear">Year</label>
+        <select id="selYear" disabled><option value="">— year —</option></select>
+      </div>
+      <div class="field" id="variantField" style="display:none;">
+        <label for="selVariant">Variant</label>
+        <select id="selVariant" disabled><option value="">— variant —</option></select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 2: Coverage -->
+  <div class="card">
+    <div class="step-label">2. Coverage</div>
+    <div class="coverage-grid" id="coverageGrid">
+      <div class="coverage-option active" data-coverage="full">
+        <div class="name">Full wrap</div>
+        <div class="desc">Full commercial graphics on every panel</div>
+      </div>
+      <div class="coverage-option" data-coverage="partial">
+        <div class="name">Partial / half wrap</div>
+        <div class="desc">50% body coverage, roof excluded</div>
+      </div>
+      <div class="coverage-option" data-coverage="lettering">
+        <div class="name">Lettering / decals</div>
+        <div class="desc">Logo, doors, contact info only</div>
+      </div>
+    </div>
+
+    <div class="roof-toggle" id="roofToggle" style="display:none;">
+      <div class="label">
+        Wrap the roof?
+        <span class="savings" id="roofSavingsText"></span>
+      </div>
+      <div class="roof-buttons">
+        <button type="button" data-roof="yes" class="active">Yes</button>
+        <button type="button" data-roof="no">No</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 3: Design (content swaps based on coverage) -->
+  <div class="card">
+    <div class="step-label" id="step3Label">3. Design files</div>
+    <div class="coverage-grid" id="step3Grid"></div>
+    <div class="design-note" id="step3Note"></div>
+  </div>
+
+  <!-- Result -->
+  <div id="resultArea">
+    <div class="card placeholder" id="placeholderCard">
+      Pick your vehicle above to see your price range.
+    </div>
+  </div>
+
+  <!-- Lead form (shown once price is rendered) -->
+  <div class="card" id="leadCard" style="display:none;">
+    <div class="step-label">4. Get your quote emailed</div>
+    <form id="leadForm" class="lead-form">
+      <input type="text" name="name" placeholder="Your name" required />
+      <input type="tel" name="phone" placeholder="Phone (optional)" />
+      <input type="email" name="email" placeholder="Email address" required class="full" />
+      <input type="hidden" name="quote_summary" id="quoteSummary" />
+      <button type="submit" class="btn full">Email me my quote</button>
+    </form>
+    <div id="leadSuccess" class="success-msg" style="display:none; margin-top:1rem;">
+      Thanks — we got it. We'll follow up within one business day.
+    </div>
+  </div>
+
+  <div class="footnote">
+    Final price confirmed after a quick in-person walk-through.<br>
+    Questions? Call iWrap NY directly.
+  </div>
+
+</div>
+
+<script src="vehicles.js"></script>
+<script>
+  const DB = typeof VEHICLES !== "undefined" ? VEHICLES : [];
+
+  const RATE_LOW = 10;
+  const RATE_HIGH = 12;
+  const DESIGN_FEE = 400;
+  const LETTERING_LOW = 499;
+  const LETTERING_HIGH = 1499;
+  const LOGO_FEES = { vector: 0, raster: 100, none: 250 };
+  const PARTIAL_MULT = 0.5;
+
+  // ----- DOM helpers -----
+  const $ = (id) => document.getElementById(id);
+  const fmtMoney = (n) => '$' + Math.round(n).toLocaleString();
+  function unique(arr) { return [...new Set(arr)]; }
+  function filtered(y, mk, mdl) {
+    let r = DB;
+    if (y)   r = r.filter(x => x.year === y);
+    if (mk)  r = r.filter(x => x.make === mk);
+    if (mdl) r = r.filter(x => x.model === mdl);
+    return r;
+  }
+  function populateSelect(el, options, placeholder) {
+    el.innerHTML = `<option value="">${placeholder}</option>` +
+      options.map(o => `<option value="${o}">${o}</option>`).join('');
+  }
+
+  // ----- State -----
+  let selY='', selMake='', selModel='', selVariant='';
+  let coverage = 'full';
+  let includeRoof = true;
+  let needsDesign = false;
+  let logoStatus = 'vector'; // for lettering: 'vector' | 'raster' | 'none'
+
+  function roofSqft(record) {
+    if (!record || !record.panels) return 0;
+    const p = record.panels.find(pp => pp.n === 'Panel F');
+    return p ? p.v : 0;
+  }
+
+  // ----- Cascade: Make → Model → Year → Variant -----
+  $('selMake').addEventListener('change', () => {
+    selMake = $('selMake').value;
+    selModel = ''; selY = ''; selVariant = '';
+    refreshModel(); refreshYear(); refreshVariant(); renderResult();
+  });
+  $('selModel').addEventListener('change', () => {
+    selModel = $('selModel').value;
+    selY = ''; selVariant = '';
+    refreshYear(); refreshVariant(); renderResult();
+  });
+  $('selYear').addEventListener('change', () => {
+    selY = $('selYear').value;
+    selVariant = '';
+    refreshVariant(); renderResult();
+  });
+  $('selVariant').addEventListener('change', () => {
+    selVariant = $('selVariant').value;
+    renderResult();
+  });
+
+  function refreshMake() {
+    populateSelect($('selMake'), unique(DB.map(r => r.make)).sort(), '— make —');
+    $('selMake').disabled = false;
+  }
+  function refreshModel() {
+    populateSelect($('selModel'), unique(filtered('', selMake, '').map(r => r.model)).sort(), '— model —');
+    $('selModel').disabled = !selMake;
+  }
+  function refreshYear() {
+    const years = unique(filtered('', selMake, selModel).map(r => r.year))
+                    .sort((a, b) => parseInt(b) - parseInt(a));
+    populateSelect($('selYear'), years, '— year —');
+    $('selYear').disabled = !selModel;
+  }
+  function refreshVariant() {
+    const el = $('selVariant');
+    const field = $('variantField');
+    const grid = $('selectorGrid');
+    if (!selModel || !selY) {
+      field.style.display = 'none';
+      grid.classList.remove('has-variant');
+      el.disabled = true;
+      selVariant = '';
+      return;
+    }
+    const variants = unique(filtered(selY, selMake, selModel).map(r => r.variant || ''));
+    if (variants.length <= 1) {
+      selVariant = variants[0] || '';
+      field.style.display = 'none';
+      grid.classList.remove('has-variant');
+      el.disabled = true;
+      return;
+    }
+    populateSelect(el, variants.sort(), '— variant —');
+    el.disabled = false;
+    field.style.display = '';
+    grid.classList.add('has-variant');
+  }
+
+  // ----- Coverage selector -----
+  document.querySelectorAll('.coverage-option[data-coverage]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.coverage-option[data-coverage]').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      coverage = btn.dataset.coverage;
+      renderStep3();
+      renderResult();
+    });
+  });
+
+  // ----- Roof toggle -----
+  document.querySelectorAll('.roof-buttons button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.roof-buttons button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      includeRoof = btn.dataset.roof === 'yes';
+      renderResult();
+    });
+  });
+
+  // ----- Step 3 (design/logo) — content depends on coverage -----
+  function renderStep3() {
+    const label = $('step3Label');
+    const grid = $('step3Grid');
+    const note = $('step3Note');
+
+    if (coverage === 'lettering') {
+      label.textContent = '3. Your logo';
+      grid.innerHTML = `
+        <div class="coverage-option ${logoStatus === 'vector' ? 'active' : ''}" data-logo="vector">
+          <div class="name">I have a vector logo</div>
+          <div class="desc">AI / EPS / SVG file ready to print</div>
+        </div>
+        <div class="coverage-option ${logoStatus === 'raster' ? 'active' : ''}" data-logo="raster">
+          <div class="name">I have a logo, needs vectorizing</div>
+          <div class="desc">+$100 to convert JPG/PNG to vector</div>
+        </div>
+        <div class="coverage-option ${logoStatus === 'none' ? 'active' : ''}" data-logo="none">
+          <div class="name">I need a logo created</div>
+          <div class="desc">+$250 to design a logo from scratch</div>
+        </div>`;
+      note.innerHTML = `<strong>Why this matters:</strong> Vector logos print sharp at any size. Raster files (JPG / PNG / screenshots) almost always need to be redrawn before they look good on a vehicle.`;
+      grid.querySelectorAll('[data-logo]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          grid.querySelectorAll('[data-logo]').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          logoStatus = btn.dataset.logo;
+          renderResult();
+        });
+      });
+    } else {
+      label.textContent = '3. Design files';
+      grid.innerHTML = `
+        <div class="coverage-option ${!needsDesign ? 'active' : ''}" data-design="ready">
+          <div class="name">I have print-ready files</div>
+          <div class="desc">Vector / high-res files sized for my vehicle</div>
+        </div>
+        <div class="coverage-option ${needsDesign ? 'active' : ''}" data-design="needed">
+          <div class="name">I need design</div>
+          <div class="desc">+$400 design fee added to quote</div>
+        </div>`;
+      note.innerHTML = `<strong>Note:</strong> AI-generated images (Midjourney, ChatGPT, etc.) are <em>not</em> print-ready. They need to be redrawn and resized for vehicle panels — that counts as "I need design."`;
+      grid.querySelectorAll('[data-design]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          grid.querySelectorAll('[data-design]').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          needsDesign = btn.dataset.design === 'needed';
+          renderResult();
+        });
+      });
+    }
+  }
+
+  // ----- Render -----
+  function findRecord() {
+    if (!(selY && selMake && selModel)) return null;
+    return DB.find(r =>
+      r.year === selY &&
+      r.make === selMake &&
+      r.model === selModel &&
+      (r.variant || '') === (selVariant || '')
+    );
+  }
+
+  function updateRoofToggle(record) {
+    const toggle = $('roofToggle');
+    const roof = roofSqft(record);
+    const showToggle = record && coverage === 'full' && roof > 0;
+    toggle.style.display = showToggle ? '' : 'none';
+    if (showToggle) {
+      const savingsLow = roof * RATE_LOW;
+      const savingsHigh = roof * RATE_HIGH;
+      $('roofSavingsText').textContent =
+        `Skip the roof to save ${fmtMoney(savingsLow)}–${fmtMoney(savingsHigh)}`;
+    }
+  }
+
+  function renderResult() {
+    const record = findRecord();
+    const resultArea = $('resultArea');
+    const leadCard = $('leadCard');
+
+    updateRoofToggle(record);
+
+    if (!record || !record.vinyl) {
+      resultArea.innerHTML = `<div class="card placeholder" id="placeholderCard">
+        Pick your vehicle above to see your price range.
+      </div>`;
+      leadCard.style.display = 'none';
+      return;
+    }
+
+    const roof = roofSqft(record);
+    const coverageName = {
+      full: 'Full wrap',
+      partial: 'Partial / half wrap',
+      lettering: 'Lettering / decals'
+    }[coverage];
+
+    let low, high, extraLine, footnote;
+
+    if (coverage === 'lettering') {
+      const logoFee = LOGO_FEES[logoStatus] || 0;
+      low = LETTERING_LOW + logoFee;
+      high = LETTERING_HIGH + logoFee;
+      const logoLabel = {
+        vector: 'vector logo provided',
+        raster: 'logo vectorizing (+$100)',
+        none: 'logo design (+$250)'
+      }[logoStatus];
+      extraLine = ` · ${logoLabel}`;
+      footnote = logoFee > 0
+        ? `Includes installation and $${logoFee} ${logoStatus === 'raster' ? 'vectorizing' : 'logo design'} fee`
+        : 'Includes installation. Bring your vector logo.';
+    } else if (coverage === 'partial') {
+      const baseSqft = (record.vinyl - roof) * PARTIAL_MULT;
+      const designFee = needsDesign ? DESIGN_FEE : 0;
+      low = baseSqft * RATE_LOW + designFee;
+      high = baseSqft * RATE_HIGH + designFee;
+      extraLine = needsDesign ? ' · design included' : ' · client files';
+      footnote = needsDesign
+        ? `Includes premium vinyl, installation, and $${DESIGN_FEE} design`
+        : 'Includes premium vinyl and professional installation';
+    } else { // full
+      const baseSqft = includeRoof ? record.vinyl : record.vinyl - roof;
+      const designFee = needsDesign ? DESIGN_FEE : 0;
+      low = baseSqft * RATE_LOW + designFee;
+      high = baseSqft * RATE_HIGH + designFee;
+      const roofNote = includeRoof ? ' · with roof' : ' · roof excluded';
+      const designNote = needsDesign ? ' · design included' : ' · client files';
+      extraLine = `${roofNote}${designNote}`;
+      footnote = needsDesign
+        ? `Includes premium vinyl, installation, and $${DESIGN_FEE} design`
+        : 'Includes premium vinyl and professional installation';
+    }
+
+    const variantText = record.variant ? ` ${record.variant}` : '';
+    resultArea.innerHTML = `
+      <div class="price-card">
+        <div class="vehicle-line">${record.year} ${record.make} ${record.model}${variantText} · ${coverageName}${extraLine}</div>
+        <div class="price-range">
+          ${fmtMoney(low)}<span class="sep">–</span>${fmtMoney(high)}
+        </div>
+        <div class="price-note">${footnote}</div>
+      </div>`;
+
+    $('quoteSummary').value =
+      `${record.year} ${record.make} ${record.model}${variantText} — ${coverageName}${extraLine} — ${fmtMoney(low)}–${fmtMoney(high)}`;
+    leadCard.style.display = '';
+  }
+
+  // ----- Lead form -----
+  $('leadForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = e.target.querySelector('button[type=submit]');
+    btn.disabled = true;
+    btn.textContent = 'Sending...';
+
+    const data = Object.fromEntries(new FormData(e.target));
+
+    // TODO: replace with real endpoint. See README for setup options
+    // (Formspree, Web3Forms, Resend, custom backend).
+    try {
+      // Stub: simulate success. Swap this block for a real fetch() to your endpoint.
+      await new Promise(r => setTimeout(r, 600));
+      console.log('Lead captured:', data);
+      e.target.style.display = 'none';
+      $('leadSuccess').style.display = '';
+    } catch (err) {
+      btn.disabled = false;
+      btn.textContent = 'Email me my quote';
+      alert('Something went wrong. Please call us instead.');
+    }
+  });
+
+  // ----- Init -----
+  refreshMake();
+  renderStep3();
+</script>
+</body>
+</html>
