@@ -142,7 +142,7 @@ export default async function handler(req, res) {
     await Promise.all([
       // 1. Business notification to iWrap NY
       resend.emails.send({
-        from: 'iWrap NY Quotes <quotes@iwrapny.com>',
+        from: 'iWrap NY Quotes <contactus@iwrapny.com>',
         to: [RECIPIENT],
         reply_to: email,
         subject: `New wrap quote — ${quote_summary.split(' — ')[0]}`,
@@ -150,7 +150,7 @@ export default async function handler(req, res) {
       }),
       // 2. Confirmation to the customer
       resend.emails.send({
-        from: 'iWrap NY <quotes@iwrapny.com>',
+        from: 'iWrap NY <contactus@iwrapny.com>',
         to: [email],
         subject: `Your iWrap NY wrap estimate — ${quote_summary.split(' — ')[0]}`,
         html: buildCustomerEmail({ name, quote_summary, quote_breakdown }),
