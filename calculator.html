@@ -1406,12 +1406,10 @@
     emailEl.addEventListener('blur', async () => {
       const email = emailEl.value.trim();
       const name  = (document.getElementById('contactName')?.value || '').trim();
-      console.log('[early capture] blur fired, email:', email);
       if (!email || !email.includes('@')) return;
-      console.log('[early capture] sending to API...');
       const urlParams = new URLSearchParams(window.location.search);
       try {
-        const earlyRes = await fetch('/api/quote', {
+        await fetch('/api/quote', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -1423,9 +1421,7 @@
             utm_campaign: urlParams.get('utm_campaign') || '',
           }),
         });
-        const earlyJson = await earlyRes.json().catch(() => ({}));
-        console.log('[early capture] response:', earlyRes.status, earlyJson);
-      } catch(e) { console.error('[early capture] error:', e); }
+      } catch(e) { /* silent fail */ }
     });
   }
 
