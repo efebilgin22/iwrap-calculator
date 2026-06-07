@@ -280,6 +280,9 @@
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 1.5rem;
   }
+  @media (max-width: 640px) {
+    .process-timeline { display: none; }
+  }
   .process-card {
     background: #fff; border-radius: 16px;
     border: 1.5px solid var(--border); overflow: hidden;
