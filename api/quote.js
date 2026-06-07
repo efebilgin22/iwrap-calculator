@@ -223,9 +223,10 @@ export default async function handler(req, res) {
   const geoLat     = req.headers['x-vercel-ip-latitude'] || undefined;
   const geoLon     = req.headers['x-vercel-ip-longitude'] || undefined;
 
-  if (!email || !quote_summary) {
+  if (!email) {
     return res.status(400).json({ error: 'Missing required fields' });
   }
+  const isPartialCapture = !quote_summary || quote_summary === 'Partial capture';
 
   // Add to Klaviyo
   async function syncToKlaviyo() {
@@ -312,7 +313,13 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Send emails + sync to Klaviyo in parallel
+    if (isPartialCapture) {
+      // Early capture — Klaviyo only, no emails
+      await syncToKlaviyo();
+      return res.status(200).json({ ok: true, partial: true });
+    }
+
+    // Full submission — send emails + sync to Klaviyo in parallel
     await Promise.all([
       syncToKlaviyo(),
       // 1. Business notification to iWrap NY
