@@ -1322,7 +1322,12 @@
           body: JSON.stringify(data),
         });
         if (!res.ok) throw new Error('Server error');
-        // Fire Google Ads conversion
+        // Fire Google Ads conversion — try parent first (iframe context), fallback to local
+        try {
+          if (window.parent && window.parent !== window) {
+            window.parent.postMessage({ type: 'gads_conversion', send_to: 'AW-703114444/AruFCOuzrrocEMzZos8C' }, '*');
+          }
+        } catch(e) {}
         if (typeof gtag !== 'undefined') {
           gtag('event', 'conversion', {
             'send_to': 'AW-703114444/AruFCOuzrrocEMzZos8C',

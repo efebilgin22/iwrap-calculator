@@ -12,6 +12,17 @@
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
   gtag('config', 'AW-703114444');
+
+  // Listen for conversion event from calculator iframe
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'gads_conversion') {
+      gtag('event', 'conversion', {
+        'send_to': e.data.send_to || 'AW-703114444/AruFCOuzrrocEMzZos8C',
+        'value': 1.0,
+        'currency': 'USD'
+      });
+    }
+  });
 </script>
 <style>
   :root {
