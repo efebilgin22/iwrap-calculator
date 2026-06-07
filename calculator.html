@@ -1414,7 +1414,7 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             email, name,
-            quote_summary: document.getElementById('quoteSummary')?.value || 'Partial capture',
+            quote_summary: 'Partial capture',
             quote_breakdown: '',
             utm_source:   urlParams.get('utm_source')   || 'direct',
             utm_medium:   urlParams.get('utm_medium')   || '',
