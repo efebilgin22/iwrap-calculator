@@ -217,6 +217,10 @@
     height: 180px; background: #f0f2f5;
     display: flex; align-items: center; justify-content: center;
     color: var(--muted-2); font-size: 0.85rem; letter-spacing: 0.02em;
+    overflow: hidden;
+  }
+  .service-photo img {
+    width: 100%; height: 100%; object-fit: cover; display: block;
   }
   .service-body { padding: 1.2rem 1.3rem 1.4rem; }
   .service-icon { font-size: 1.6rem; margin-bottom: 0.5rem; }
@@ -443,7 +447,7 @@
     <div class="services-grid">
 
       <div class="service-card">
-        <div class="service-photo">Full wrap photo · 4:3</div>
+        <div class="service-photo"><img src="full_vehicle_wrap.webp" alt="Full vehicle wrap" loading="lazy" /></div>
         <div class="service-body">
           <div class="service-icon">🔥</div>
           <div class="service-name">Full Vehicle Wrap</div>
@@ -452,7 +456,7 @@
       </div>
 
       <div class="service-card">
-        <div class="service-photo">Partial wrap photo · 4:3</div>
+        <div class="service-photo"><img src="partial_wrap.webp" alt="Partial vehicle wrap" loading="lazy" /></div>
         <div class="service-body">
           <div class="service-icon">⭐</div>
           <div class="service-name">Partial Wrap</div>
@@ -461,7 +465,7 @@
       </div>
 
       <div class="service-card">
-        <div class="service-photo">Decals / lettering photo · 4:3</div>
+        <div class="service-photo"><img src="decals_lettering.webp" alt="Decals and lettering" loading="lazy" /></div>
         <div class="service-body">
           <div class="service-icon">✍️</div>
           <div class="service-name">Decals & Lettering</div>
@@ -470,7 +474,7 @@
       </div>
 
       <div class="service-card">
-        <div class="service-photo">Storefront photo · 4:3</div>
+        <div class="service-photo"><img src="storefront_graphics.webp" alt="Storefront graphics" loading="lazy" /></div>
         <div class="service-body">
           <div class="service-icon">🏪</div>
           <div class="service-name">Storefront Graphics</div>
