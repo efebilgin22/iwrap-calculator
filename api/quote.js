@@ -213,7 +213,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { name, phone, email, contact_pref, quote_summary, quote_breakdown, marketing_consent } = req.body;
+  const { name, phone, email, contact_pref, quote_summary, quote_breakdown, marketing_consent, utm_source, utm_medium, utm_campaign } = req.body;
   const hasConsent = marketing_consent === 'on' || marketing_consent === 'true' || marketing_consent === true;
 
   // Vercel geo headers — automatically populated from visitor IP
@@ -265,6 +265,9 @@ export default async function handler(req, res) {
         quote_range: priceStr,
         contact_preference: contact_pref,
         source: 'iWrap NY Quote Calculator',
+        lead_source: utm_source || 'direct',
+        utm_medium: utm_medium || '',
+        utm_campaign: utm_campaign || '',
       },
     };
 

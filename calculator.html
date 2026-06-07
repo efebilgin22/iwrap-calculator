@@ -1315,6 +1315,11 @@
       btn.disabled = true;
       btn.textContent = 'Loading your price...';
       const data = Object.fromEntries(new FormData(form));
+      // Capture UTM params from URL for Google Ads attribution
+      const urlParams = new URLSearchParams(window.location.search);
+      data.utm_source   = urlParams.get('utm_source')   || 'direct';
+      data.utm_medium   = urlParams.get('utm_medium')   || '';
+      data.utm_campaign = urlParams.get('utm_campaign') || '';
       try {
         const res = await fetch('/api/quote', {
           method: 'POST',
@@ -1394,6 +1399,31 @@
     const el = $(id);
     if (el) el.addEventListener('input', updateNextButton);
   });
+
+  // Early Klaviyo capture — fires when user leaves the email field
+  const emailEl = document.getElementById('contactEmail');
+  if (emailEl) {
+    emailEl.addEventListener('blur', async () => {
+      const email = emailEl.value.trim();
+      const name  = (document.getElementById('contactName')?.value || '').trim();
+      if (!email || !email.includes('@')) return;
+      const urlParams = new URLSearchParams(window.location.search);
+      try {
+        await fetch('/api/quote', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email, name,
+            quote_summary: document.getElementById('quoteSummary')?.value || 'Partial capture',
+            quote_breakdown: '',
+            utm_source:   urlParams.get('utm_source')   || 'direct',
+            utm_medium:   urlParams.get('utm_medium')   || '',
+            utm_campaign: urlParams.get('utm_campaign') || '',
+          }),
+        });
+      } catch(e) { /* silent fail */ }
+    });
+  }
 
   /* ============================================================
      Init
