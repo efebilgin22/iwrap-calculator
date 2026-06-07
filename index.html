@@ -390,7 +390,36 @@
       </a>
     </div>
     <div class="hero-calc-wrap" id="calculator">
-      <iframe src="/calculator.html" class="hero-calc-frame" title="iWrap NY Price Calculator" id="calcFrame" loading="lazy" height="700"></iframe>
+      <div id="calcWrapper">
+        <!-- Placeholder shown instantly on mobile -->
+        <div id="calcPlaceholder" style="
+          background: #fff;
+          min-height: 400px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          padding: 2rem;
+          text-align: center;
+        ">
+          <div style="font-size:2rem;margin-bottom:1rem;">🚐</div>
+          <div style="font-size:1.3rem;font-weight:800;color:#0f172a;margin-bottom:0.5rem;">Get Your Instant Wrap Price</div>
+          <div style="color:#64748b;margin-bottom:1.5rem;">Takes 60 seconds — no sales call needed</div>
+          <button onclick="loadCalc()" style="
+            background:#f27024;color:#fff;border:none;
+            padding:1rem 2.5rem;border-radius:12px;
+            font-size:1.1rem;font-weight:800;cursor:pointer;
+          ">See My Price →</button>
+        </div>
+        <iframe
+          id="calcFrame"
+          src=""
+          data-src="/calculator.html"
+          class="hero-calc-frame"
+          style="display:none;"
+          title="Vehicle Wrap Price Calculator"
+        ></iframe>
+      </div>
     </div>
   </div>
 </section>
@@ -591,6 +620,28 @@
 </footer>
 
 <script>
+  function loadCalc() {
+    const frame = document.getElementById('calcFrame');
+    const placeholder = document.getElementById('calcPlaceholder');
+    if (frame.src) return; // already loaded
+    frame.src = frame.dataset.src;
+    frame.style.display = 'block';
+    placeholder.style.display = 'none';
+  }
+
+  // Auto-load on desktop, lazy-load on mobile
+  if (window.innerWidth >= 768) {
+    loadCalc();
+  } else {
+    const observer = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting) {
+        loadCalc();
+        observer.disconnect();
+      }
+    }, { rootMargin: '200px' });
+    observer.observe(document.getElementById('calcWrapper'));
+  }
+
   // Auto-resize the calculator iframe to avoid double scrollbars
   const frame = document.getElementById('calcFrame');
   function resizeFrame() {
