@@ -234,21 +234,9 @@
     gap: 1.5rem;
     margin-top: 0.5rem;
   }
-  .why-last-row {
-    grid-column: 1 / -1;
-    display: flex;
-    justify-content: center;
-    gap: 1.5rem;
-  }
-  .why-last-row .why-card { flex: 0 1 calc(33.333% - 0.75rem); }
-  @media (max-width: 900px) {
-    .why-grid { grid-template-columns: repeat(2, 1fr); }
-    .why-last-row .why-card { flex: 0 1 calc(50% - 0.75rem); }
-  }
-  @media (max-width: 560px) {
+  .why-last-row { display: contents; }
+  @media (max-width: 640px) {
     .why-grid { grid-template-columns: 1fr; }
-    .why-last-row { flex-direction: column; }
-    .why-last-row .why-card { flex: 1 1 100%; }
   }
   .why-card {
     background: #fff; border-radius: 16px; padding: 1.6rem 1.5rem;
