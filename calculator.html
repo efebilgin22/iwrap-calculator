@@ -1411,7 +1411,7 @@
       console.log('[early capture] sending to API...');
       const urlParams = new URLSearchParams(window.location.search);
       try {
-        await fetch('/api/quote', {
+        const earlyRes = await fetch('/api/quote', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -1423,6 +1423,8 @@
             utm_campaign: urlParams.get('utm_campaign') || '',
           }),
         });
+        const earlyJson = await earlyRes.json().catch(() => ({}));
+        console.log('[early capture] response:', earlyRes.status, earlyJson);
       } catch(e) { console.error('[early capture] error:', e); }
     });
   }
