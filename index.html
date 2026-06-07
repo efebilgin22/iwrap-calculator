@@ -623,7 +623,8 @@
   function loadCalc() {
     const frame = document.getElementById('calcFrame');
     const placeholder = document.getElementById('calcPlaceholder');
-    if (frame.src) return; // already loaded
+    if (frame.dataset.loaded) return;
+    frame.dataset.loaded = '1';
     frame.src = frame.dataset.src;
     frame.style.display = 'block';
     placeholder.style.display = 'none';
