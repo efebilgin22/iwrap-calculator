@@ -4,6 +4,14 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Commercial Vehicle Wrap Quote — iWrap NY</title>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=AW-703114444"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'AW-703114444');
+</script>
 <style>
   :root {
     --brand: #f27024;
@@ -1299,6 +1307,14 @@
       });
       if (!res.ok) throw new Error('Server error');
       showStep('done');
+      // Fire Google Ads conversion
+      if (typeof gtag !== 'undefined') {
+        gtag('event', 'conversion', {
+          'send_to': 'AW-703114444/AruFCOuzrrocEMzZos8C',
+          'value': 1.0,
+          'currency': 'USD'
+        });
+      }
     } catch (err) {
       console.error(err);
       btn.disabled = false;
