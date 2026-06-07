@@ -456,21 +456,18 @@
     <div class="addon-list" id="addonList"></div>
   </section>
 
-  <!-- ====== STEP: price ====== -->
-  <section class="step" data-step="price">
+  <!-- ====== STEP: contact ====== -->
+  <section class="step" data-step="contact">
     <div class="step-header">
       <img src="logo.png" alt="iWrap NY" class="site-logo" />
-      <div class="step-label" id="lbl-price"></div>
-      <h1 class="step-title">Your price</h1>
-      <p class="step-subtitle">Enter your details and let us know how you'd like us to reach you.</p>
+      <div class="step-label" id="lbl-contact"></div>
+      <h1 class="step-title">You're one step away</h1>
+      <p class="step-subtitle">Enter your details and we'll show you your custom estimate instantly.</p>
     </div>
-    <div class="price-reveal" id="priceReveal"></div>
-    <div class="breakdown" id="breakdown"></div>
     <form id="leadForm" class="lead-form">
-      <h3 class="full">Get your quote</h3>
-      <input type="text" name="name" placeholder="Your name" required />
+      <input type="text" name="name" id="contactName" placeholder="Your name" required />
       <input type="tel" name="phone" id="phoneInput" placeholder="(631) 212-2329" maxlength="14" autocomplete="tel" />
-      <input type="email" name="email" placeholder="Email address" required class="full" />
+      <input type="email" name="email" id="contactEmail" placeholder="Email address" required class="full" />
       <div class="contact-pref full">
         <div class="contact-pref-label">How would you like us to follow up?</div>
         <div class="contact-pref-options">
@@ -485,8 +482,31 @@
         <input type="checkbox" name="marketing_consent" id="marketingConsent" />
         <span>I agree to receive promotional emails and SMS messages from iWrap NY about wrap deals, tips, and offers. You can unsubscribe at any time.</span>
       </label>
-      <button type="submit" class="btn btn-primary full">Send my quote</button>
     </form>
+  </section>
+
+  <!-- ====== STEP: price ====== -->
+  <section class="step" data-step="price">
+    <div class="step-header">
+      <img src="logo.png" alt="iWrap NY" class="site-logo" />
+      <div class="step-label" id="lbl-price"></div>
+      <h1 class="step-title">Your estimate</h1>
+      <p class="step-subtitle">Your quote has been sent — we'll follow up within one business day.</p>
+    </div>
+    <div class="price-reveal" id="priceReveal"></div>
+    <div class="breakdown" id="breakdown"></div>
+    <div style="text-align:center; margin-top:1.5rem;">
+      <a href="tel:+16312122329" class="call-btn" style="display:inline-flex;">
+        <span class="call-icon">📞</span>
+        Call us now
+        <span class="call-number">+1 (631) 212-2329</span>
+      </a>
+      <p class="call-hint">Have questions? We're happy to talk through it.</p>
+      <div class="done-links" style="margin-top:1rem;">
+        <a href="https://maps.google.com/?q=657+Old+Willets+Path,+Hauppauge,+NY+11788" target="_blank" class="done-link">📍 657 Old Willets Path, Hauppauge, NY 11788</a>
+        <a href="https://share.google/zlBaKDD6WTBxsieMd" target="_blank" class="done-link">⭐ See our Google reviews</a>
+      </div>
+    </div>
   </section>
 
   <!-- ====== Success ====== -->
@@ -542,9 +562,9 @@
 
   // Routes: defines step order per quote type
   const ROUTES = {
-    vehicle:    ['type', 'vehicle', 'coverage', 'design', 'addons', 'price'],
-    dimension:  ['type', 'dimensions', 'design', 'price'],
-    storefront: ['type', 'storefront', 'design', 'price'],
+    vehicle:    ['type', 'vehicle', 'coverage', 'design', 'addons', 'contact', 'price'],
+    dimension:  ['type', 'dimensions', 'design', 'contact', 'price'],
+    storefront: ['type', 'storefront', 'design', 'contact', 'price'],
   };
 
   const DB = typeof VEHICLES !== "undefined" ? VEHICLES : [];
@@ -1227,6 +1247,11 @@
         return sidesOk && rearOk && frontOk;
       }
       case 'storefront': return state.surfaces.length > 0 && state.surfaces.every(s => s.width > 0 && s.height > 0);
+      case 'contact': {
+        const nameEl = $('contactName');
+        const emailEl = $('contactEmail');
+        return !!(nameEl && nameEl.value.trim() && emailEl && emailEl.value.trim());
+      }
       default:           return true;
     }
   }
@@ -1234,11 +1259,12 @@
   function updateNextButton() {
     const btn = $('btnNext');
     btn.disabled = !canAdvance();
-    const route = getRoute();
-    const idx = route.indexOf(state.step);
-    const nextStepId = route[idx + 1];
-    btn.textContent = nextStepId === 'price' ? 'See my price' : 'Continue';
-    btn.style.display = state.step === 'price' ? 'none' : '';
+    if (state.step === 'contact') {
+      btn.textContent = 'See my price →';
+    } else {
+      btn.textContent = 'Continue';
+    }
+    btn.style.display = (state.step === 'price') ? 'none' : '';
     $('btnBack').style.display = state.step === 'type' ? 'none' : 'inline-flex';
   }
 
@@ -1271,14 +1297,51 @@
     if (stepId === 'coverage')   { renderTierGrid(); renderTierTabs(); }
     if (stepId === 'design')     renderDesignStep();
     if (stepId === 'addons')     renderAddons();
+    if (stepId === 'contact')    renderQuote(); // pre-fills hidden fields
     if (stepId === 'price')      renderQuote();
 
     updateNextButton();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  $('btnNext').addEventListener('click', () => {
+  $('btnNext').addEventListener('click', async () => {
     if (!canAdvance()) return;
+
+    // Contact step: submit form to API, then advance to price
+    if (state.step === 'contact') {
+      const form = $('leadForm');
+      if (!form.checkValidity()) { form.reportValidity(); return; }
+      const btn = $('btnNext');
+      btn.disabled = true;
+      btn.textContent = 'Loading your price...';
+      const data = Object.fromEntries(new FormData(form));
+      try {
+        const res = await fetch('/api/quote', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
+        });
+        if (!res.ok) throw new Error('Server error');
+        // Fire Google Ads conversion
+        if (typeof gtag !== 'undefined') {
+          gtag('event', 'conversion', {
+            'send_to': 'AW-703114444/AruFCOuzrrocEMzZos8C',
+            'value': 1.0,
+            'currency': 'USD'
+          });
+        }
+        const route = getRoute();
+        const idx = route.indexOf(state.step);
+        showStep(route[idx + 1]);
+      } catch (err) {
+        console.error(err);
+        btn.disabled = false;
+        btn.textContent = 'See my price →';
+        alert('Something went wrong — please call us directly or try again.');
+      }
+      return;
+    }
+
     const route = getRoute();
     const idx = route.indexOf(state.step);
     if (idx < route.length - 1) showStep(route[idx + 1]);
@@ -1288,39 +1351,6 @@
     const route = getRoute();
     const idx = route.indexOf(state.step);
     if (idx > 0) showStep(route[idx - 1]);
-  });
-
-  /* ============================================================
-     Lead form
-  ============================================================ */
-  $('leadForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const btn = e.target.querySelector('button[type=submit]');
-    btn.disabled = true;
-    btn.textContent = 'Sending...';
-    const data = Object.fromEntries(new FormData(e.target));
-    try {
-      const res = await fetch('/api/quote', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      });
-      if (!res.ok) throw new Error('Server error');
-      showStep('done');
-      // Fire Google Ads conversion
-      if (typeof gtag !== 'undefined') {
-        gtag('event', 'conversion', {
-          'send_to': 'AW-703114444/AruFCOuzrrocEMzZos8C',
-          'value': 1.0,
-          'currency': 'USD'
-        });
-      }
-    } catch (err) {
-      console.error(err);
-      btn.disabled = false;
-      btn.textContent = 'Send my quote';
-      alert('Something went wrong — please call us directly or try again.');
-    }
   });
 
   /* ============================================================
@@ -1351,6 +1381,14 @@
       }
     });
   }
+
+  /* ============================================================
+     Contact form — enable button as user types
+  ============================================================ */
+  ['contactName', 'contactEmail'].forEach(id => {
+    const el = $(id);
+    if (el) el.addEventListener('input', updateNextButton);
+  });
 
   /* ============================================================
      Init
