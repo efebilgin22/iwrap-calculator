@@ -230,9 +230,25 @@
   /* ── WHY US ── */
   .why-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    grid-template-columns: repeat(3, 1fr);
     gap: 1.5rem;
     margin-top: 0.5rem;
+  }
+  .why-last-row {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+  }
+  .why-last-row .why-card { flex: 0 1 calc(33.333% - 0.75rem); }
+  @media (max-width: 900px) {
+    .why-grid { grid-template-columns: repeat(2, 1fr); }
+    .why-last-row .why-card { flex: 0 1 calc(50% - 0.75rem); }
+  }
+  @media (max-width: 560px) {
+    .why-grid { grid-template-columns: 1fr; }
+    .why-last-row { flex-direction: column; }
+    .why-last-row .why-card { flex: 1 1 100%; }
   }
   .why-card {
     background: #fff; border-radius: 16px; padding: 1.6rem 1.5rem;
@@ -518,16 +534,17 @@
         <div class="why-desc">Based in Hauppauge, NY, we handle the design, printing, and installation locally — no middlemen, no shipping your vehicle out, and no guessing who is working on your wrap.</div>
       </div>
 
-      <div class="why-card">
-        <div class="why-icon">💰</div>
-        <div class="why-title">Transparent Pricing</div>
-        <div class="why-desc">Get a realistic price range based on your actual vehicle and wrap coverage. No games, no vague estimates — just clear numbers to help you plan.</div>
-      </div>
-
-      <div class="why-card">
-        <div class="why-icon">🚐</div>
-        <div class="why-title">Fleet Wrap Specialists</div>
-        <div class="why-desc">Wrapping multiple vehicles? We create consistent branding across your fleet with matching colors, layouts, and graphics from one vehicle to the next.</div>
+      <div class="why-last-row">
+        <div class="why-card">
+          <div class="why-icon">💰</div>
+          <div class="why-title">Transparent Pricing</div>
+          <div class="why-desc">Get a realistic price range based on your actual vehicle and wrap coverage. No games, no vague estimates — just clear numbers to help you plan.</div>
+        </div>
+        <div class="why-card">
+          <div class="why-icon">🚐</div>
+          <div class="why-title">Fleet Wrap Specialists</div>
+          <div class="why-desc">Wrapping multiple vehicles? We create consistent branding across your fleet with matching colors, layouts, and graphics from one vehicle to the next.</div>
+        </div>
       </div>
 
     </div>
