@@ -3,6 +3,12 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<!-- Skip heavy mosaic animation on mobile -->
+<style>
+  @media (max-width: 768px) {
+    .hero-bg-bottom { display: none !important; }
+  }
+</style>
 <link rel="preconnect" href="https://www.googletagmanager.com">
 <link rel="preconnect" href="https://a.klaviyo.com">
 <link rel="preconnect" href="https://elfsightcdn.com">
