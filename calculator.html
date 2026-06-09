@@ -159,7 +159,11 @@
   .tier-thumbs { margin-top: 0.6rem; margin-bottom: 0.85rem; }
   .tier-thumbs-label { color: var(--muted); font-size: 0.78rem; margin-bottom: 0.4rem; }
   .tier-thumbs-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.35rem; }
-  .tier-included { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 0.7rem 0.85rem; font-size: 0.88rem; color: var(--ink); margin-bottom: 0.55rem; display: flex; align-items: center; gap: 0.45rem; }
+  .tier-included { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 0.7rem 0.85rem; font-size: 0.88rem; color: var(--ink); margin-bottom: 0.55rem; }
+  .tier-included-title { display: flex; align-items: center; gap: 0.45rem; font-weight: 600; margin-bottom: 0.5rem; }
+  .tier-included-bullets { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.3rem; }
+  .tier-included-bullets li { display: flex; align-items: flex-start; gap: 0.4rem; color: var(--muted); font-size: 0.84rem; line-height: 1.4; }
+  .tier-included-bullets li::before { content: '✓'; color: var(--success); font-weight: 700; flex-shrink: 0; margin-top: 0.05rem; }
   .tier-tagline { background: var(--brand-soft); border-radius: 8px; padding: 0.65rem 0.85rem; font-size: 0.85rem; color: var(--ink); }
   .tier-included .checkmark { color: var(--success); font-weight: 700; }
 
@@ -890,6 +894,7 @@
       photo: 'Calculator_lettering.webp',
       thumbs: [],
       includedTitle: "What's included in a decals package?",
+      includedBullets: ['Logo, phone number & website', 'Basic service text on key areas', 'Clean, professional branding', 'No full wrap — paint stays visible'],
       tagline: '👍  Simple branding that builds trust'
     },
     partial: {
@@ -897,6 +902,7 @@
       photo: 'Calculator_partial_wrap.webp',
       thumbs: [],
       includedTitle: "What's included in a partial wrap?",
+      includedBullets: ['Larger logos & contact info', 'Rear branding & custom accent graphics', 'Bold look on selected areas', 'Some paint stays visible'],
       tagline: '⭐  Stand out from competitors on the road'
     },
     full: {
@@ -904,6 +910,7 @@
       photo: 'Calculator_full_wrap.webp',
       thumbs: [],
       includedTitle: "What's included in a full wrap?",
+      includedBullets: ['Full custom graphics across the vehicle', 'Logo, services, phone & website', 'Optional QR code', 'Maximum road visibility'],
       tagline: '🔥  Dominate attention wherever you go'
     },
   };
@@ -926,7 +933,10 @@
           <div class="tier-photo"><img src="${meta.photo}" alt="${meta.name}" loading="lazy" /></div>
           <div class="tier-head"><div class="tier-name">${meta.name}</div><div class="tier-starting">${saText}</div></div>
           ${thumbsHtml}
-          <div class="tier-included"><span class="checkmark">✓</span> ${meta.includedTitle}</div>
+          <div class="tier-included">
+            <div class="tier-included-title"><span class="checkmark">✓</span> ${meta.includedTitle}</div>
+            <ul class="tier-included-bullets">${meta.includedBullets.map(b => `<li>${b}</li>`).join('')}</ul>
+          </div>
           <div class="tier-tagline">${meta.tagline}</div>
         </div>`;
     }).join('');
