@@ -148,8 +148,10 @@
   .tier-card { background: var(--card); border: 2px solid var(--border); border-radius: 14px; padding: 1rem; cursor: pointer; transition: border-color 0.12s; }
   .tier-card:hover { border-color: var(--border-strong); }
   .tier-card.active { border-color: var(--ink); box-shadow: 0 0 0 1px var(--ink); }
-  .tier-photo { aspect-ratio: 16 / 10; background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%); border: 1px dashed var(--border-strong); border-radius: 10px; margin-bottom: 0.85rem; display: flex; align-items: center; justify-content: center; color: var(--muted-2); font-size: 0.8rem; text-align: center; padding: 0.5rem; }
-  .tier-card.active .tier-photo { border-style: solid; }
+  .tier-photo { aspect-ratio: 16 / 10; border-radius: 10px; margin-bottom: 0.85rem; overflow: hidden; background: #f1f5f9; }
+  .tier-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .tier-thumb { aspect-ratio: 1; border-radius: 6px; overflow: hidden; background: #f1f5f9; }
+  .tier-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
   .tier-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.5rem; gap: 0.5rem; flex-wrap: wrap; }
   .tier-name { font-size: 1.1rem; font-weight: 800; color: var(--ink); }
   .tier-starting { font-size: 0.85rem; color: var(--muted); }
@@ -157,7 +159,6 @@
   .tier-thumbs { margin-top: 0.6rem; margin-bottom: 0.85rem; }
   .tier-thumbs-label { color: var(--muted); font-size: 0.78rem; margin-bottom: 0.4rem; }
   .tier-thumbs-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.35rem; }
-  .tier-thumb { aspect-ratio: 1; background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%); border: 1px dashed var(--border-strong); border-radius: 6px; }
   .tier-included { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 0.7rem 0.85rem; font-size: 0.88rem; color: var(--ink); margin-bottom: 0.55rem; display: flex; align-items: center; gap: 0.45rem; }
   .tier-tagline { background: var(--brand-soft); border-radius: 8px; padding: 0.65rem 0.85rem; font-size: 0.85rem; color: var(--ink); }
   .tier-included .checkmark { color: var(--success); font-weight: 700; }
@@ -884,9 +885,27 @@
   }
 
   const COVERAGE_META = {
-    lettering: { name: 'Decals / lettering', photoLabel: 'Lettering / decals photo · 16:10', includedTitle: "What's included in a decals package?", tagline: '👍  Simple branding that builds trust' },
-    partial:   { name: 'Partial wrap',        photoLabel: 'Partial wrap photo · 16:10',       includedTitle: "What's included in a partial wrap?",    tagline: '⭐  Stand out from competitors on the road' },
-    full:      { name: 'Full wrap',            photoLabel: 'Full wrap photo · 16:10',          includedTitle: "What's included in a full wrap?",        tagline: '🔥  Dominate attention wherever you go' },
+    lettering: {
+      name: 'Decals / lettering',
+      photo: 'decals_lettering.webp',
+      thumbs: ['gallery/sm_heritagewindow.webp','gallery/sm_jic.webp','gallery/sm_slimeland.webp','gallery/sm_robs.webp'],
+      includedTitle: "What's included in a decals package?",
+      tagline: '👍  Simple branding that builds trust'
+    },
+    partial: {
+      name: 'Partial wrap',
+      photo: 'partial_wrap.webp',
+      thumbs: ['gallery/sm_birdiezgolf.webp','gallery/sm_mexicandy.webp','gallery/sm_motorino.webp','gallery/sm_hetta.webp'],
+      includedTitle: "What's included in a partial wrap?",
+      tagline: '⭐  Stand out from competitors on the road'
+    },
+    full: {
+      name: 'Full wrap',
+      photo: 'full_vehicle_wrap.webp',
+      thumbs: ['gallery/sm_iwrap.webp','gallery/sm_sharp_rapid.webp','gallery/sm_athenian.webp','gallery/sm_coastguard.webp'],
+      includedTitle: "What's included in a full wrap?",
+      tagline: '🔥  Dominate attention wherever you go'
+    },
   };
 
   function renderTierGrid() {
@@ -895,13 +914,16 @@
       const meta = COVERAGE_META[cov];
       const sa = startingAt(cov);
       const saText = sa != null ? `Starting at <strong>${fmtMoney(sa)}</strong>` : '';
+      const thumbsHtml = meta.thumbs.map(t =>
+        `<div class="tier-thumb"><img src="${t}" alt="${meta.name}" loading="lazy" /></div>`
+      ).join('');
       return `
         <div class="tier-card ${state.coverage === cov ? 'active' : ''}" data-cov="${cov}">
-          <div class="tier-photo">${meta.photoLabel}</div>
+          <div class="tier-photo"><img src="${meta.photo}" alt="${meta.name}" loading="lazy" /></div>
           <div class="tier-head"><div class="tier-name">${meta.name}</div><div class="tier-starting">${saText}</div></div>
           <div class="tier-thumbs">
             <div class="tier-thumbs-label">Real examples at this price</div>
-            <div class="tier-thumbs-row"><div class="tier-thumb"></div><div class="tier-thumb"></div><div class="tier-thumb"></div><div class="tier-thumb"></div></div>
+            <div class="tier-thumbs-row">${thumbsHtml}</div>
           </div>
           <div class="tier-included"><span class="checkmark">✓</span> ${meta.includedTitle}</div>
           <div class="tier-tagline">${meta.tagline}</div>

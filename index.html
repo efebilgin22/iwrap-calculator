@@ -66,7 +66,7 @@
   .nav-logo { height: 56px; width: auto; display: block; }
   .nav-right { display: flex; align-items: center; gap: 1.25rem; }
   .nav-address {
-    color: rgba(255,255,255,0.6); font-size: 0.82rem; text-decoration: none;
+    color: rgba(255,255,255,0.8); font-size: 0.82rem; text-decoration: none;
     display: flex; align-items: center; gap: 0.3rem;
   }
   .nav-address:hover { color: var(--brand); }
@@ -98,15 +98,20 @@
   }
   .hero-bg-bottom {
     position: absolute; bottom: 0; left: 0; right: 0; height: 50%;
-    background: url('mosaic.webp') 0 center / auto 100% repeat-x;
+    overflow: hidden;
     z-index: 0;
+  }
+  .hero-bg-bottom-inner {
+    position: absolute; inset: 0;
+    background: url('mosaic.webp') 0 center / auto 100% repeat-x;
     animation: scrollMosaic 30s linear infinite;
+    will-change: transform;
   }
   @keyframes scrollMosaic {
-    from { background-position: -2000px center; }
-    to { background-position: 0 center; }
+    from { transform: translateX(-2000px); }
+    to { transform: translateX(0); }
   }
-  .hero-bg-top::after, .hero-bg-bottom::after {
+  .hero-bg-top::after, .hero-bg-bottom-inner::after {
     content: '';
     position: absolute; inset: 0;
     background: rgba(0,0,0,0.20);
@@ -356,11 +361,11 @@
   .reviews-bg { background: #1a1a1a; }
   .reviews-bg .section-title { color: #ffffff !important; }
   .reviews-bg .section-eyebrow { color: var(--brand); }
-  .reviews-bg .section-sub { color: rgba(255,255,255,0.55); }
+  .reviews-bg .section-sub { color: rgba(255,255,255,0.75); }
   .stars { color: #fbbf24; font-size: 1.1rem; letter-spacing: 0.05em; margin-bottom: 0.25rem; }
   .rating-hero { text-align: center; margin-bottom: 2.5rem; }
   .rating-big { font-size: 3.5rem; font-weight: 900; color: #fff; line-height: 1; }
-  .rating-label { font-size: 0.9rem; color: rgba(255,255,255,0.5); margin-top: 0.3rem; }
+  .rating-label { font-size: 0.9rem; color: rgba(255,255,255,0.75); margin-top: 0.3rem; }
   .reviews-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -373,7 +378,7 @@
     border-radius: 16px; padding: 1.5rem;
   }
   .review-text { font-size: 0.95rem; color: rgba(255,255,255,0.8); line-height: 1.65; margin-bottom: 1rem; }
-  .review-author { font-size: 0.85rem; font-weight: 700; color: rgba(255,255,255,0.55); }
+  .review-author { font-size: 0.85rem; font-weight: 700; color: rgba(255,255,255,0.78); }
   .reviews-cta { text-align: center; margin-top: 2rem; }
   .btn-reviews {
     display: inline-flex; align-items: center; gap: 0.5rem;
@@ -421,7 +426,7 @@
 
 <!-- NAV -->
 <nav class="nav">
-  <img src="logo.png" alt="iWrap NY" class="nav-logo" />
+  <img src="logo.webp" alt="iWrap NY" class="nav-logo" width="56" height="56" />
   <div class="nav-right">
     <a href="https://maps.google.com/?q=657+Old+Willets+Path,+Hauppauge,+NY+11788" target="_blank" class="nav-address">📍 657 Old Willets Path, Hauppauge, NY 11788</a>
     <a href="tel:+16312122329" class="nav-phone">📞 (631) 212-2329</a>
@@ -429,10 +434,13 @@
   </div>
 </nav>
 
+<!-- MAIN CONTENT -->
+<main>
+
 <!-- HERO -->
 <section class="hero" id="hero">
   <div class="hero-bg-top"></div>
-  <div class="hero-bg-bottom"></div>
+  <div class="hero-bg-bottom"><div class="hero-bg-bottom-inner"></div></div>
   <div class="hero-content">
     <div class="hero-eyebrow">Long Island's Commercial Wrap Specialists</div>
     <h1>Turn Your Vehicle Into a <em>Rolling Billboard</em></h1>
@@ -501,7 +509,7 @@
     <div class="services-grid">
 
       <div class="service-card">
-        <div class="service-photo"><img src="full_vehicle_wrap.webp" alt="Full vehicle wrap" loading="lazy" /></div>
+        <div class="service-photo"><img src="full_vehicle_wrap.webp" alt="Full vehicle wrap" loading="lazy" width="800" height="600" /></div>
         <div class="service-body">
           <div class="service-icon">🔥</div>
           <div class="service-name">Full Vehicle Wrap</div>
@@ -510,7 +518,7 @@
       </div>
 
       <div class="service-card">
-        <div class="service-photo"><img src="partial_wrap.webp" alt="Partial vehicle wrap" loading="lazy" /></div>
+        <div class="service-photo"><img src="partial_wrap.webp" alt="Partial vehicle wrap" loading="lazy" width="800" height="600" /></div>
         <div class="service-body">
           <div class="service-icon">⭐</div>
           <div class="service-name">Partial Wrap</div>
@@ -519,7 +527,7 @@
       </div>
 
       <div class="service-card">
-        <div class="service-photo"><img src="decals_lettering.webp" alt="Decals and lettering" loading="lazy" /></div>
+        <div class="service-photo"><img src="decals_lettering.webp" alt="Decals and lettering" loading="lazy" width="800" height="600" /></div>
         <div class="service-body">
           <div class="service-icon">✍️</div>
           <div class="service-name">Decals & Lettering</div>
@@ -528,7 +536,7 @@
       </div>
 
       <div class="service-card">
-        <div class="service-photo"><img src="storefront_graphics.webp" alt="Storefront graphics" loading="lazy" /></div>
+        <div class="service-photo"><img src="storefront_graphics.webp" alt="Storefront graphics" loading="lazy" width="800" height="600" /></div>
         <div class="service-body">
           <div class="service-icon">🏪</div>
           <div class="service-name">Storefront Graphics</div>
@@ -609,7 +617,7 @@
 
       <div class="process-card">
         <div class="process-photo">
-          <img src="design.webp" alt="Design process" />
+          <img src="design.webp" alt="Design process" width="800" height="1067" loading="lazy" />
         </div>
         <div class="process-body">
           <div class="process-step">Step One</div>
@@ -620,7 +628,7 @@
 
       <div class="process-card">
         <div class="process-photo">
-          <img src="print.webp" alt="Printing process" />
+          <img src="print.webp" alt="Printing process" width="800" height="1067" loading="lazy" />
         </div>
         <div class="process-body">
           <div class="process-step">Step Two</div>
@@ -631,7 +639,7 @@
 
       <div class="process-card">
         <div class="process-photo">
-          <img src="install.webp" alt="Installation process" />
+          <img src="install.webp" alt="Installation process" width="800" height="1067" loading="lazy" />
         </div>
         <div class="process-body">
           <div class="process-step">Step Three</div>
@@ -652,22 +660,22 @@
     <h2 class="section-title">Wraps We've Done Across New York</h2>
     <p class="section-sub">Every wrap is designed, printed, and installed in-house at our Hauppauge shop — serving Long Island, NYC, and surrounding areas.</p>
     <div class="gallery-grid">
-      <img src="gallery/iwrap.webp" alt="iWrap NY vehicle wrap" loading="lazy" />
-      <img src="gallery/bryankarp.webp" alt="Bryan Karp vehicle wrap" loading="lazy" />
-      <img src="gallery/athenian.webp" alt="Athenian vehicle wrap" loading="lazy" />
-      <img src="gallery/robs.webp" alt="Rob's vehicle wrap" loading="lazy" />
-      <img src="gallery/vinnyslandscaping.webp" alt="Vinny's Landscaping wrap" loading="lazy" />
-      <img src="gallery/jic.webp" alt="JIC vehicle wrap" loading="lazy" />
-      <img src="gallery/motorino.webp" alt="Motorino vehicle wrap" loading="lazy" />
-      <img src="gallery/sharp_rapid.webp" alt="Sharp Rapid vehicle wrap" loading="lazy" />
-      <img src="gallery/coastguard.webp" alt="Coast Guard vehicle wrap" loading="lazy" />
-      <img src="gallery/heritagewindow.webp" alt="Heritage Window wrap" loading="lazy" />
-      <img src="gallery/birdiezgolf.webp" alt="Birdiez Golf wrap" loading="lazy" />
-      <img src="gallery/jicdryer.webp" alt="JIC Dryer wrap" loading="lazy" />
-      <img src="gallery/funnelcakes.webp" alt="Funnel Cakes wrap" loading="lazy" />
-      <img src="gallery/mexicandy.webp" alt="Mexicandy wrap" loading="lazy" />
-      <img src="gallery/hetta.webp" alt="Hetta wrap" loading="lazy" />
-      <img src="gallery/slimeland.webp" alt="Slimeland wrap" loading="lazy" />
+      <img src="gallery/iwrap.webp" srcset="gallery/sm_iwrap.webp 400w, gallery/iwrap.webp 800w" sizes="(max-width:640px) 50vw, 25vw" alt="iWrap NY vehicle wrap" loading="lazy" />
+      <img src="gallery/bryankarp.webp" srcset="gallery/sm_bryankarp.webp 400w, gallery/bryankarp.webp 800w" sizes="(max-width:640px) 50vw, 25vw" alt="Bryan Karp vehicle wrap" loading="lazy" />
+      <img src="gallery/athenian.webp" srcset="gallery/sm_athenian.webp 400w, gallery/athenian.webp 800w" sizes="(max-width:640px) 50vw, 25vw" alt="Athenian vehicle wrap" loading="lazy" />
+      <img src="gallery/robs.webp" srcset="gallery/sm_robs.webp 400w, gallery/robs.webp 800w" sizes="(max-width:640px) 50vw, 25vw" alt="Rob's vehicle wrap" loading="lazy" />
+      <img src="gallery/vinnyslandscaping.webp" srcset="gallery/sm_vinnyslandscaping.webp 400w, gallery/vinnyslandscaping.webp 800w" sizes="(max-width:640px) 50vw, 25vw" alt="Vinny's Landscaping wrap" loading="lazy" />
+      <img src="gallery/jic.webp" srcset="gallery/sm_jic.webp 400w, gallery/jic.webp 800w" sizes="(max-width:640px) 50vw, 25vw" alt="JIC vehicle wrap" loading="lazy" />
+      <img src="gallery/motorino.webp" srcset="gallery/sm_motorino.webp 400w, gallery/motorino.webp 800w" sizes="(max-width:640px) 50vw, 25vw" alt="Motorino vehicle wrap" loading="lazy" />
+      <img src="gallery/sharp_rapid.webp" srcset="gallery/sm_sharp_rapid.webp 400w, gallery/sharp_rapid.webp 800w" sizes="(max-width:640px) 50vw, 25vw" alt="Sharp Rapid vehicle wrap" loading="lazy" />
+      <img src="gallery/coastguard.webp" srcset="gallery/sm_coastguard.webp 400w, gallery/coastguard.webp 800w" sizes="(max-width:640px) 50vw, 25vw" alt="Coast Guard vehicle wrap" loading="lazy" />
+      <img src="gallery/heritagewindow.webp" srcset="gallery/sm_heritagewindow.webp 400w, gallery/heritagewindow.webp 800w" sizes="(max-width:640px) 50vw, 25vw" alt="Heritage Window wrap" loading="lazy" />
+      <img src="gallery/birdiezgolf.webp" srcset="gallery/sm_birdiezgolf.webp 400w, gallery/birdiezgolf.webp 800w" sizes="(max-width:640px) 50vw, 25vw" alt="Birdiez Golf wrap" loading="lazy" />
+      <img src="gallery/jicdryer.webp" srcset="gallery/sm_jicdryer.webp 400w, gallery/jicdryer.webp 800w" sizes="(max-width:640px) 50vw, 25vw" alt="JIC Dryer wrap" loading="lazy" />
+      <img src="gallery/funnelcakes.webp" srcset="gallery/sm_funnelcakes.webp 400w, gallery/funnelcakes.webp 800w" sizes="(max-width:640px) 50vw, 25vw" alt="Funnel Cakes wrap" loading="lazy" />
+      <img src="gallery/mexicandy.webp" srcset="gallery/sm_mexicandy.webp 400w, gallery/mexicandy.webp 800w" sizes="(max-width:640px) 50vw, 25vw" alt="Mexicandy wrap" loading="lazy" />
+      <img src="gallery/hetta.webp" srcset="gallery/sm_hetta.webp 400w, gallery/hetta.webp 800w" sizes="(max-width:640px) 50vw, 25vw" alt="Hetta wrap" loading="lazy" />
+      <img src="gallery/slimeland.webp" srcset="gallery/sm_slimeland.webp 400w, gallery/slimeland.webp 800w" sizes="(max-width:640px) 50vw, 25vw" alt="Slimeland wrap" loading="lazy" />
     </div>
   </div>
 </section>
@@ -691,10 +699,12 @@
   </div>
 </section>
 
+</main>
+
 <!-- FOOTER -->
 <footer>
   <div class="footer-inner">
-    <img src="logo.png" alt="iWrap NY" />
+    <img src="logo.webp" alt="iWrap NY" width="80" height="80" />
     <div class="footer-links">
       <a href="https://iwrapny.com">iwrapny.com</a>
       <a href="tel:+16312122329">(631) 212-2329</a>
