@@ -887,22 +887,22 @@
   const COVERAGE_META = {
     lettering: {
       name: 'Decals / lettering',
-      photo: 'decals_lettering.webp',
-      thumbs: ['gallery/sm_heritagewindow.webp','gallery/sm_jic.webp','gallery/sm_slimeland.webp','gallery/sm_robs.webp'],
+      photo: 'Calculator_lettering.webp',
+      thumbs: [],
       includedTitle: "What's included in a decals package?",
       tagline: '👍  Simple branding that builds trust'
     },
     partial: {
       name: 'Partial wrap',
-      photo: 'partial_wrap.webp',
-      thumbs: ['gallery/sm_birdiezgolf.webp','gallery/sm_mexicandy.webp','gallery/sm_motorino.webp','gallery/sm_hetta.webp'],
+      photo: 'Calculator_partial_wrap.webp',
+      thumbs: [],
       includedTitle: "What's included in a partial wrap?",
       tagline: '⭐  Stand out from competitors on the road'
     },
     full: {
       name: 'Full wrap',
-      photo: 'full_vehicle_wrap.webp',
-      thumbs: ['gallery/sm_iwrap.webp','gallery/sm_sharp_rapid.webp','gallery/sm_athenian.webp','gallery/sm_coastguard.webp'],
+      photo: 'Calculator_full_wrap.webp',
+      thumbs: [],
       includedTitle: "What's included in a full wrap?",
       tagline: '🔥  Dominate attention wherever you go'
     },
@@ -914,17 +914,18 @@
       const meta = COVERAGE_META[cov];
       const sa = startingAt(cov);
       const saText = sa != null ? `Starting at <strong>${fmtMoney(sa)}</strong>` : '';
-      const thumbsHtml = meta.thumbs.map(t =>
-        `<div class="tier-thumb"><img src="${t}" alt="${meta.name}" loading="lazy" /></div>`
-      ).join('');
+      const thumbsHtml = meta.thumbs.length > 0 ? `
+          <div class="tier-thumbs">
+            <div class="tier-thumbs-label">Real examples at this price</div>
+            <div class="tier-thumbs-row">${meta.thumbs.map(t =>
+              `<div class="tier-thumb"><img src="${t}" alt="${meta.name}" loading="lazy" /></div>`
+            ).join('')}</div>
+          </div>` : '';
       return `
         <div class="tier-card ${state.coverage === cov ? 'active' : ''}" data-cov="${cov}">
           <div class="tier-photo"><img src="${meta.photo}" alt="${meta.name}" loading="lazy" /></div>
           <div class="tier-head"><div class="tier-name">${meta.name}</div><div class="tier-starting">${saText}</div></div>
-          <div class="tier-thumbs">
-            <div class="tier-thumbs-label">Real examples at this price</div>
-            <div class="tier-thumbs-row">${thumbsHtml}</div>
-          </div>
+          ${thumbsHtml}
           <div class="tier-included"><span class="checkmark">✓</span> ${meta.includedTitle}</div>
           <div class="tier-tagline">${meta.tagline}</div>
         </div>`;
