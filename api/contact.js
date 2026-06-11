@@ -80,14 +80,72 @@ export default async function handler(req, res) {
 </table>
 </body></html>`;
 
+  async function syncToKlaviyo() {
+    if (!process.env.KLAVIYO_API_KEY) return;
+    const [firstName, ...rest] = (name || '').trim().split(' ');
+    let formattedPhone;
+    if (phone) {
+      const digits = phone.replace(/\D/g, '');
+      if (digits.length === 10) formattedPhone = `+1${digits}`;
+      else if (digits.length === 11 && digits.startsWith('1')) formattedPhone = `+${digits}`;
+    }
+    const headers = {
+      'Authorization': `Klaviyo-API-Key ${process.env.KLAVIYO_API_KEY}`,
+      'Content-Type': 'application/json',
+      'revision': '2024-02-15',
+    };
+    const profileAttributes = {
+      email,
+      first_name: firstName || '',
+      last_name: rest.join(' ') || '',
+      ...(formattedPhone && { phone_number: formattedPhone }),
+      properties: {
+        source: 'iWrap NY Contact Form',
+        project_type: project_type || '',
+        message: message,
+      },
+    };
+    try {
+      let profileId;
+      const createRes = await fetch('https://a.klaviyo.com/api/profiles/', {
+        method: 'POST', headers,
+        body: JSON.stringify({ data: { type: 'profile', attributes: profileAttributes } }),
+      });
+      if (createRes.status === 201) {
+        profileId = (await createRes.json())?.data?.id;
+      } else if (createRes.status === 409) {
+        const conflict = await createRes.json();
+        profileId = conflict?.errors?.[0]?.meta?.duplicate_profile_id;
+        if (profileId) {
+          await fetch(`https://a.klaviyo.com/api/profiles/${profileId}/`, {
+            method: 'PATCH', headers,
+            body: JSON.stringify({ data: { type: 'profile', id: profileId, attributes: profileAttributes } }),
+          });
+        }
+      }
+      // Add to Quote Leads list
+      if (profileId) {
+        await fetch(`https://a.klaviyo.com/api/lists/UguvA9/relationships/profiles/`, {
+          method: 'POST', headers,
+          body: JSON.stringify({ data: [{ type: 'profile', id: profileId }] }),
+        });
+      }
+    } catch (e) {
+      console.error('Klaviyo sync error:', e);
+    }
+  }
+
   try {
-    await resend.emails.send({
-      from: 'iWrap NY Contact <contactus@iwrapny.com>',
-      to: [RECIPIENT],
-      reply_to: email,
-      subject: `New contact request from ${name}${project_type ? ' — ' + project_type : ''}`,
-      html,
-    });
+    await Promise.all([
+      syncToKlaviyo(),
+      resend.emails.send({
+        from: 'iWrap NY Contact <contactus@iwrapny.com>',
+        to: [RECIPIENT],
+        reply_to: email,
+        subject: `New contact request from ${name}${project_type ? ' — ' + project_type : ''}`,
+        html,
+      }),
+    ]);
     return res.status(200).json({ ok: true });
   } catch (err) {
     console.error('Resend error:', err);
