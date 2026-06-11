@@ -66,19 +66,24 @@
     padding: 0.75rem 2rem;
   }
   .nav-links {
-    display: flex; align-items: center; justify-content: center;
-    gap: 0; border-top: 1px solid rgba(255,255,255,0.08);
+    display: flex; align-items: center;
+    border-top: 1px solid rgba(255,255,255,0.08);
     overflow-x: auto; -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
+    scrollbar-width: none; padding: 0 0.5rem;
   }
   .nav-links::-webkit-scrollbar { display: none; }
+  .nav-links-inner {
+    display: flex; align-items: center;
+    margin: 0 auto;
+  }
   .nav-link {
-    color: rgba(255,255,255,0.6); font-size: 0.82rem; font-weight: 600;
-    text-decoration: none; padding: 0.55rem 1.1rem;
+    color: rgba(255,255,255,0.65); font-size: 0.83rem; font-weight: 600;
+    text-decoration: none; padding: 0.6rem 1rem;
     letter-spacing: 0.03em; transition: color 0.12s, background 0.12s;
     white-space: nowrap; flex-shrink: 0;
   }
-  .nav-link:hover { color: var(--brand); background: rgba(255,255,255,0.04); }
+  .nav-link:hover { color: var(--brand); background: rgba(255,255,255,0.05); }
+  .nav-link.nav-link-cta { color: var(--brand); font-weight: 700; }
   .nav-logo { height: 56px; width: auto; display: block; }
   .nav-right { display: flex; align-items: center; gap: 1.25rem; }
   .nav-address {
@@ -528,13 +533,15 @@
     </div>
   </div>
   <div class="nav-links">
-    <a href="#calculator" class="nav-link" style="color:var(--brand);">Get a Quote</a>
-    <a href="#services" class="nav-link">Services</a>
-    <a href="#why-us" class="nav-link">Why Us</a>
-    <a href="#how-it-works" class="nav-link">How It Works</a>
-    <a href="#contact" class="nav-link">Contact</a>
-    <a href="#gallery" class="nav-link">Our Work</a>
-    <a href="#reviews" class="nav-link">Reviews</a>
+    <div class="nav-links-inner">
+      <a href="#calculator" class="nav-link nav-link-cta">Get a Quote</a>
+      <a href="#services" class="nav-link">Services</a>
+      <a href="#why-us" class="nav-link">Why Us</a>
+      <a href="#how-it-works" class="nav-link">How It Works</a>
+      <a href="#contact" class="nav-link">Contact</a>
+      <a href="#gallery" class="nav-link">Our Work</a>
+      <a href="#reviews" class="nav-link">Reviews</a>
+    </div>
   </div>
 </nav>
 
