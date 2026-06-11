@@ -1162,8 +1162,8 @@
         return {
           label: `Surface ${i + 1} (${s.width} × ${s.height} ${uLabel})`,
           sqft,
-          low: sqft * RATE_LOW,
-          high: sqft * RATE_HIGH,
+          low: sqft * DIM_RATE_LOW,
+          high: sqft * DIM_RATE_HIGH,
         };
       });
       const baseLow = surfaceItems.reduce((a, s) => a + s.low, 0);
