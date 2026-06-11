@@ -68,15 +68,17 @@
   .nav-links {
     display: flex; align-items: center; justify-content: center;
     gap: 0; border-top: 1px solid rgba(255,255,255,0.08);
+    overflow-x: auto; -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
   }
+  .nav-links::-webkit-scrollbar { display: none; }
   .nav-link {
     color: rgba(255,255,255,0.6); font-size: 0.82rem; font-weight: 600;
     text-decoration: none; padding: 0.55rem 1.1rem;
     letter-spacing: 0.03em; transition: color 0.12s, background 0.12s;
-    white-space: nowrap;
+    white-space: nowrap; flex-shrink: 0;
   }
   .nav-link:hover { color: var(--brand); background: rgba(255,255,255,0.04); }
-  @media (max-width: 768px) { .nav-links { display: none; } }
   .nav-logo { height: 56px; width: auto; display: block; }
   .nav-right { display: flex; align-items: center; gap: 1.25rem; }
   .nav-address {
