@@ -43,6 +43,7 @@
     --muted-2: #94a3b8;
   }
 
+  html { scroll-behavior: smooth; }
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   html { scroll-behavior: smooth; }
@@ -59,10 +60,25 @@
   .nav {
     position: sticky; top: 0; z-index: 100;
     background: #000000;
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 0.75rem 2rem;
+    display: flex; flex-direction: column;
     box-shadow: 0 2px 12px rgba(0,0,0,0.18);
   }
+  .nav-top {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0.75rem 2rem;
+  }
+  .nav-links {
+    display: flex; align-items: center; justify-content: center;
+    gap: 0; border-top: 1px solid rgba(255,255,255,0.08);
+  }
+  .nav-link {
+    color: rgba(255,255,255,0.6); font-size: 0.82rem; font-weight: 600;
+    text-decoration: none; padding: 0.55rem 1.1rem;
+    letter-spacing: 0.03em; transition: color 0.12s, background 0.12s;
+    white-space: nowrap;
+  }
+  .nav-link:hover { color: var(--brand); background: rgba(255,255,255,0.04); }
+  @media (max-width: 640px) { .nav-links { display: none; } }
   .nav-logo { height: 56px; width: auto; display: block; }
   .nav-right { display: flex; align-items: center; gap: 1.25rem; }
   .nav-address {
@@ -505,11 +521,22 @@
 
 <!-- NAV -->
 <nav class="nav">
-  <img src="logo.webp" alt="iWrap NY" class="nav-logo" width="56" height="56" />
-  <div class="nav-right">
-    <a href="https://maps.google.com/?q=657+Old+Willets+Path,+Hauppauge,+NY+11788" target="_blank" class="nav-address">📍 657 Old Willets Path, Hauppauge, NY 11788</a>
-    <a href="tel:+16312122329" class="nav-phone">📞 (631) 212-2329</a>
-    <a href="#calculator" class="nav-cta">Get a Free Quote</a>
+  <div class="nav-top">
+    <img src="logo.webp" alt="iWrap NY" class="nav-logo" width="56" height="56" />
+    <div class="nav-right">
+      <a href="https://maps.google.com/?q=657+Old+Willets+Path,+Hauppauge,+NY+11788" target="_blank" class="nav-address">📍 657 Old Willets Path, Hauppauge, NY 11788</a>
+      <a href="tel:+16312122329" class="nav-phone">📞 (631) 212-2329</a>
+      <a href="#calculator" class="nav-cta">Get a Free Quote</a>
+    </div>
+  </div>
+  <div class="nav-links">
+    <a href="#services" class="nav-link">Services</a>
+    <a href="#why-us" class="nav-link">Why Us</a>
+    <a href="#how-it-works" class="nav-link">How It Works</a>
+    <a href="#contact" class="nav-link">Contact</a>
+    <a href="#gallery" class="nav-link">Our Work</a>
+    <a href="#reviews" class="nav-link">Reviews</a>
+    <a href="#calculator" class="nav-link">Get a Quote</a>
   </div>
 </nav>
 
@@ -580,7 +607,7 @@
 </div>
 
 <!-- SERVICES -->
-<section class="services-bg">
+<section class="services-bg" id="services">
   <div class="section-inner">
     <div class="section-eyebrow">What We Do</div>
     <h2 class="section-title">Every Type of Vehicle & Surface</h2>
@@ -628,7 +655,7 @@
 </section>
 
 <!-- WHY US -->
-<section>
+<section id="why-us">
   <div class="section-inner">
     <div class="section-eyebrow">Why iWrap NY</div>
     <h2 class="section-title">Built for New York Businesses That Need to Be Seen</h2>
@@ -677,7 +704,7 @@
 </section>
 
 <!-- PROCESS -->
-<section class="process-bg">
+<section class="process-bg" id="how-it-works">
   <div class="section-inner">
     <div class="section-eyebrow" style="text-align:center;">How It Works</div>
     <h2 class="section-title" style="text-align:center;">Our Process</h2>
@@ -733,7 +760,7 @@
 </section>
 
 <!-- CONTACT -->
-<section class="contact-section">
+<section class="contact-section" id="contact">
   <div class="contact-inner">
     <div class="section-eyebrow" style="text-align:center;color:var(--brand);font-size:0.78rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:0.5rem;">Get In Touch</div>
     <h2 class="section-title" style="text-align:center;margin-bottom:0.5rem;">Have a custom project?</h2>
@@ -878,7 +905,7 @@
 </script>
 
 <!-- GALLERY -->
-<section>
+<section id="gallery">
   <div class="section-inner">
     <div class="section-eyebrow">Our Work</div>
     <h2 class="section-title">Wraps We've Done Across New York</h2>
@@ -905,7 +932,7 @@
 </section>
 
 <!-- REVIEWS -->
-<section class="reviews-bg">
+<section class="reviews-bg" id="reviews">
   <div class="section-inner">
     <div class="section-eyebrow">Google Reviews</div>
     <h2 class="section-title">What Our Customers Say</h2>
