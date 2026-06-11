@@ -732,6 +732,151 @@
   </div>
 </section>
 
+<!-- CONTACT -->
+<section class="contact-section">
+  <div class="contact-inner">
+    <div class="section-eyebrow" style="text-align:center;color:var(--brand);font-size:0.78rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:0.5rem;">Get In Touch</div>
+    <h2 class="section-title" style="text-align:center;margin-bottom:0.5rem;">Have a custom project?</h2>
+    <p style="text-align:center;color:#64748b;font-size:0.97rem;margin-bottom:2rem;">Tell us about your project and upload photos of your vehicle. We'll get back to you within one business day.</p>
+
+    <div class="contact-card">
+      <div id="contactFormWrap">
+        <form id="contactForm">
+
+          <div class="contact-row-2">
+            <div class="contact-field">
+              <label for="cf-name">Name</label>
+              <input type="text" id="cf-name" placeholder="Your name" required />
+            </div>
+            <div class="contact-field">
+              <label for="cf-phone">Phone <span class="opt">(optional)</span></label>
+              <input type="tel" id="cf-phone" placeholder="(631) 212-2329" maxlength="14" />
+            </div>
+          </div>
+
+          <div class="contact-field">
+            <label for="cf-email">Email</label>
+            <input type="email" id="cf-email" placeholder="you@company.com" required />
+          </div>
+
+          <div class="contact-field">
+            <label for="cf-type">Project type</label>
+            <select id="cf-type">
+              <option value="">Select a project type</option>
+              <option>Full vehicle wrap</option>
+              <option>Partial wrap</option>
+              <option>Decals / lettering</option>
+              <option>Box truck / trailer</option>
+              <option>Fleet wraps</option>
+              <option>Storefront / window graphics</option>
+              <option>Other</option>
+            </select>
+          </div>
+
+          <div class="contact-field">
+            <label for="cf-message">Tell us about your project</label>
+            <textarea id="cf-message" placeholder="Describe your vehicle, what you're looking for, your timeline, etc." required></textarea>
+          </div>
+
+          <div class="contact-field">
+            <label>Vehicle photos <span class="opt">(optional — up to 5 photos)</span></label>
+            <div class="file-upload-area" id="fileUploadArea">
+              <input type="file" id="cf-photos" accept="image/*" multiple />
+              <div class="file-upload-icon">📷</div>
+              <div class="file-upload-label">
+                <strong>Click to upload</strong> or drag & drop<br>
+                JPG, PNG, HEIC up to 4MB each
+              </div>
+            </div>
+            <div class="file-preview" id="filePreview"></div>
+          </div>
+
+          <button type="submit" class="btn-contact-submit" id="cfSubmitBtn">Send Message</button>
+        </form>
+      </div>
+
+      <div class="contact-success" id="contactSuccess" style="display:none;">
+        <div class="cs-icon">✅</div>
+        <h3>Message sent!</h3>
+        <p>Thanks — we'll get back to you within one business day.<br>For urgent inquiries call <a href="tel:+16312122329" style="color:#f27024;font-weight:600;">+1 (631) 212-2329</a>.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+(function() {
+  const cfPhone = document.getElementById('cf-phone');
+  if (cfPhone) {
+    cfPhone.addEventListener('input', e => {
+      let d = e.target.value.replace(/\D/g,'').slice(0,10);
+      let m = '';
+      if (d.length > 0) m = '(' + d.slice(0,3);
+      if (d.length >= 4) m += ') ' + d.slice(3,6);
+      if (d.length >= 7) m += '-' + d.slice(6,10);
+      e.target.value = m;
+    });
+  }
+
+  let selectedFiles = [];
+  const fileInput = document.getElementById('cf-photos');
+  const filePreview = document.getElementById('filePreview');
+
+  fileInput.addEventListener('change', () => {
+    const files = Array.from(fileInput.files).slice(0, 5);
+    selectedFiles = files;
+    filePreview.innerHTML = '';
+    files.forEach(f => {
+      const reader = new FileReader();
+      reader.onload = e => {
+        const img = document.createElement('img');
+        img.src = e.target.result;
+        img.className = 'file-preview-thumb';
+        filePreview.appendChild(img);
+      };
+      reader.readAsDataURL(f);
+    });
+  });
+
+  document.getElementById('contactForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const btn = document.getElementById('cfSubmitBtn');
+    btn.disabled = true;
+    btn.textContent = 'Sending...';
+
+    const photoDataUrls = await Promise.all(selectedFiles.map(f => new Promise(resolve => {
+      const reader = new FileReader();
+      reader.onload = ev => resolve(ev.target.result);
+      reader.readAsDataURL(f);
+    })));
+
+    const payload = {
+      name:         document.getElementById('cf-name').value.trim(),
+      phone:        document.getElementById('cf-phone').value.trim(),
+      email:        document.getElementById('cf-email').value.trim(),
+      project_type: document.getElementById('cf-type').value,
+      message:      document.getElementById('cf-message').value.trim(),
+      photo_urls:   photoDataUrls,
+    };
+
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) throw new Error();
+      document.getElementById('contactFormWrap').style.display = 'none';
+      document.getElementById('contactSuccess').style.display = 'block';
+    } catch {
+      btn.disabled = false;
+      btn.textContent = 'Send Message';
+      alert('Something went wrong — please call us or try again.');
+    }
+  });
+})();
+</script>
+
 <!-- GALLERY -->
 <section>
   <div class="section-inner">
@@ -891,155 +1036,6 @@
     </div>
   </div>
 </section>
-
-<!-- CONTACT -->
-<section class="contact-section">
-  <div class="contact-inner">
-    <div class="section-eyebrow" style="text-align:center;color:var(--brand);font-size:0.78rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:0.5rem;">Get In Touch</div>
-    <h2 class="section-title" style="text-align:center;margin-bottom:0.5rem;">Have a custom project?</h2>
-    <p style="text-align:center;color:#64748b;font-size:0.97rem;margin-bottom:2rem;">Tell us about your project and upload photos of your vehicle. We'll get back to you within one business day.</p>
-
-    <div class="contact-card">
-      <div id="contactFormWrap">
-        <form id="contactForm">
-
-          <div class="contact-row-2">
-            <div class="contact-field">
-              <label for="cf-name">Name</label>
-              <input type="text" id="cf-name" placeholder="Your name" required />
-            </div>
-            <div class="contact-field">
-              <label for="cf-phone">Phone <span class="opt">(optional)</span></label>
-              <input type="tel" id="cf-phone" placeholder="(631) 212-2329" maxlength="14" />
-            </div>
-          </div>
-
-          <div class="contact-field">
-            <label for="cf-email">Email</label>
-            <input type="email" id="cf-email" placeholder="you@company.com" required />
-          </div>
-
-          <div class="contact-field">
-            <label for="cf-type">Project type</label>
-            <select id="cf-type">
-              <option value="">Select a project type</option>
-              <option>Full vehicle wrap</option>
-              <option>Partial wrap</option>
-              <option>Decals / lettering</option>
-              <option>Box truck / trailer</option>
-              <option>Fleet wraps</option>
-              <option>Storefront / window graphics</option>
-              <option>Other</option>
-            </select>
-          </div>
-
-          <div class="contact-field">
-            <label for="cf-message">Tell us about your project</label>
-            <textarea id="cf-message" placeholder="Describe your vehicle, what you're looking for, your timeline, etc." required></textarea>
-          </div>
-
-          <div class="contact-field">
-            <label>Vehicle photos <span class="opt">(optional — up to 5 photos)</span></label>
-            <div class="file-upload-area" id="fileUploadArea">
-              <input type="file" id="cf-photos" accept="image/*" multiple />
-              <div class="file-upload-icon">📷</div>
-              <div class="file-upload-label">
-                <strong>Click to upload</strong> or drag & drop<br>
-                JPG, PNG, HEIC up to 4MB each
-              </div>
-            </div>
-            <div class="file-preview" id="filePreview"></div>
-          </div>
-
-          <button type="submit" class="btn-contact-submit" id="cfSubmitBtn">Send Message</button>
-        </form>
-      </div>
-
-      <div class="contact-success" id="contactSuccess" style="display:none;">
-        <div class="cs-icon">✅</div>
-        <h3>Message sent!</h3>
-        <p>Thanks — we'll get back to you within one business day.<br>For urgent inquiries call <a href="tel:+16312122329" style="color:#f27024;font-weight:600;">+1 (631) 212-2329</a>.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<script>
-(function() {
-  // Phone mask
-  const cfPhone = document.getElementById('cf-phone');
-  if (cfPhone) {
-    cfPhone.addEventListener('input', e => {
-      let d = e.target.value.replace(/\D/g,'').slice(0,10);
-      let m = '';
-      if (d.length > 0) m = '(' + d.slice(0,3);
-      if (d.length >= 4) m += ') ' + d.slice(3,6);
-      if (d.length >= 7) m += '-' + d.slice(6,10);
-      e.target.value = m;
-    });
-  }
-
-  // File preview (base64 for email)
-  let selectedFiles = [];
-  const fileInput = document.getElementById('cf-photos');
-  const filePreview = document.getElementById('filePreview');
-
-  fileInput.addEventListener('change', () => {
-    const files = Array.from(fileInput.files).slice(0, 5);
-    selectedFiles = files;
-    filePreview.innerHTML = '';
-    files.forEach(f => {
-      const reader = new FileReader();
-      reader.onload = e => {
-        const img = document.createElement('img');
-        img.src = e.target.result;
-        img.className = 'file-preview-thumb';
-        filePreview.appendChild(img);
-      };
-      reader.readAsDataURL(f);
-    });
-  });
-
-  // Submit
-  document.getElementById('contactForm').addEventListener('submit', async e => {
-    e.preventDefault();
-    const btn = document.getElementById('cfSubmitBtn');
-    btn.disabled = true;
-    btn.textContent = 'Sending...';
-
-    // Convert images to base64 data URLs to include in email
-    const photoDataUrls = await Promise.all(selectedFiles.map(f => new Promise(resolve => {
-      const reader = new FileReader();
-      reader.onload = ev => resolve(ev.target.result);
-      reader.readAsDataURL(f);
-    })));
-
-    const payload = {
-      name:         document.getElementById('cf-name').value.trim(),
-      phone:        document.getElementById('cf-phone').value.trim(),
-      email:        document.getElementById('cf-email').value.trim(),
-      project_type: document.getElementById('cf-type').value,
-      message:      document.getElementById('cf-message').value.trim(),
-      photo_urls:   photoDataUrls,
-    };
-
-    try {
-      const res = await fetch('/api/contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
-      if (!res.ok) throw new Error();
-      document.getElementById('contactFormWrap').style.display = 'none';
-      document.getElementById('contactSuccess').style.display = 'block';
-    } catch {
-      btn.disabled = false;
-      btn.textContent = 'Send Message';
-      alert('Something went wrong — please call us or try again.');
-    }
-  });
-})();
-</script>
 
 </main>
 
