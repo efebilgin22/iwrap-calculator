@@ -431,6 +431,52 @@
     min-height: 820px;
   }
 
+  /* ── CONTACT FORM ── */
+  .contact-section { background: #f4f5f7; padding: 5rem 0; }
+  .contact-inner { max-width: 680px; margin: 0 auto; padding: 0 1.5rem; }
+  .contact-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 20px; padding: 2.5rem 2rem; }
+  .contact-field { margin-bottom: 1.1rem; }
+  .contact-field label { display: block; font-size: 0.88rem; font-weight: 600; color: #0f172a; margin-bottom: 0.35rem; }
+  .contact-field label .opt { color: #94a3b8; font-weight: 400; }
+  .contact-field input, .contact-field select, .contact-field textarea {
+    width: 100%; background: #f4f5f7; color: #0f172a;
+    border: 1px solid #e5e7eb; border-radius: 10px;
+    padding: 0.85rem 1rem; font-size: 0.95rem; font-family: inherit;
+    appearance: none; box-sizing: border-box;
+  }
+  .contact-field select { background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8'><path fill='%2364748b' d='M6 8L0 0h12z'/></svg>"); background-repeat: no-repeat; background-position: right 1rem center; padding-right: 2.5rem; }
+  .contact-field input:focus, .contact-field select:focus, .contact-field textarea:focus { outline: none; border-color: #0f172a; }
+  .contact-field textarea { resize: vertical; min-height: 120px; line-height: 1.6; }
+  .contact-field input::placeholder, .contact-field textarea::placeholder { color: #94a3b8; }
+  .contact-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+  @media (max-width: 560px) { .contact-row-2 { grid-template-columns: 1fr; } .contact-card { padding: 1.75rem 1.25rem; } }
+
+  /* file upload */
+  .file-upload-area {
+    border: 2px dashed #e5e7eb; border-radius: 10px; padding: 1.5rem 1rem;
+    text-align: center; cursor: pointer; transition: border-color 0.15s;
+    background: #f4f5f7; position: relative;
+  }
+  .file-upload-area:hover { border-color: #f27024; }
+  .file-upload-area input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+  .file-upload-icon { font-size: 1.75rem; margin-bottom: 0.4rem; }
+  .file-upload-label { font-size: 0.88rem; color: #64748b; line-height: 1.5; }
+  .file-upload-label strong { color: #f27024; }
+  .file-preview { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.75rem; }
+  .file-preview-thumb { width: 72px; height: 72px; object-fit: cover; border-radius: 8px; border: 1px solid #e5e7eb; }
+
+  .btn-contact-submit {
+    width: 100%; background: #f27024; color: #fff; border: none; border-radius: 999px;
+    padding: 1rem 2rem; font-size: 1rem; font-weight: 700; cursor: pointer;
+    font-family: inherit; margin-top: 0.5rem; transition: background 0.15s;
+  }
+  .btn-contact-submit:hover:not(:disabled) { background: #d65a18; }
+  .btn-contact-submit:disabled { background: #fde2cf; color: #94a3b8; cursor: not-allowed; }
+  .contact-success { text-align: center; padding: 2rem 1rem; }
+  .contact-success .cs-icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
+  .contact-success h3 { font-size: 1.3rem; font-weight: 800; color: #0f172a; margin-bottom: 0.4rem; }
+  .contact-success p { color: #64748b; font-size: 0.95rem; }
+
   /* ── FOOTER ── */
   footer {
     background: #000000; color: rgba(255,255,255,0.5);
@@ -845,6 +891,155 @@
     </div>
   </div>
 </section>
+
+<!-- CONTACT -->
+<section class="contact-section">
+  <div class="contact-inner">
+    <div class="section-eyebrow" style="text-align:center;color:var(--brand);font-size:0.78rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:0.5rem;">Get In Touch</div>
+    <h2 class="section-title" style="text-align:center;margin-bottom:0.5rem;">Have a custom project?</h2>
+    <p style="text-align:center;color:#64748b;font-size:0.97rem;margin-bottom:2rem;">Tell us about your project and upload photos of your vehicle. We'll get back to you within one business day.</p>
+
+    <div class="contact-card">
+      <div id="contactFormWrap">
+        <form id="contactForm">
+
+          <div class="contact-row-2">
+            <div class="contact-field">
+              <label for="cf-name">Name</label>
+              <input type="text" id="cf-name" placeholder="Your name" required />
+            </div>
+            <div class="contact-field">
+              <label for="cf-phone">Phone <span class="opt">(optional)</span></label>
+              <input type="tel" id="cf-phone" placeholder="(631) 212-2329" maxlength="14" />
+            </div>
+          </div>
+
+          <div class="contact-field">
+            <label for="cf-email">Email</label>
+            <input type="email" id="cf-email" placeholder="you@company.com" required />
+          </div>
+
+          <div class="contact-field">
+            <label for="cf-type">Project type</label>
+            <select id="cf-type">
+              <option value="">Select a project type</option>
+              <option>Full vehicle wrap</option>
+              <option>Partial wrap</option>
+              <option>Decals / lettering</option>
+              <option>Box truck / trailer</option>
+              <option>Fleet wraps</option>
+              <option>Storefront / window graphics</option>
+              <option>Other</option>
+            </select>
+          </div>
+
+          <div class="contact-field">
+            <label for="cf-message">Tell us about your project</label>
+            <textarea id="cf-message" placeholder="Describe your vehicle, what you're looking for, your timeline, etc." required></textarea>
+          </div>
+
+          <div class="contact-field">
+            <label>Vehicle photos <span class="opt">(optional — up to 5 photos)</span></label>
+            <div class="file-upload-area" id="fileUploadArea">
+              <input type="file" id="cf-photos" accept="image/*" multiple />
+              <div class="file-upload-icon">📷</div>
+              <div class="file-upload-label">
+                <strong>Click to upload</strong> or drag & drop<br>
+                JPG, PNG, HEIC up to 4MB each
+              </div>
+            </div>
+            <div class="file-preview" id="filePreview"></div>
+          </div>
+
+          <button type="submit" class="btn-contact-submit" id="cfSubmitBtn">Send Message</button>
+        </form>
+      </div>
+
+      <div class="contact-success" id="contactSuccess" style="display:none;">
+        <div class="cs-icon">✅</div>
+        <h3>Message sent!</h3>
+        <p>Thanks — we'll get back to you within one business day.<br>For urgent inquiries call <a href="tel:+16312122329" style="color:#f27024;font-weight:600;">+1 (631) 212-2329</a>.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+(function() {
+  // Phone mask
+  const cfPhone = document.getElementById('cf-phone');
+  if (cfPhone) {
+    cfPhone.addEventListener('input', e => {
+      let d = e.target.value.replace(/\D/g,'').slice(0,10);
+      let m = '';
+      if (d.length > 0) m = '(' + d.slice(0,3);
+      if (d.length >= 4) m += ') ' + d.slice(3,6);
+      if (d.length >= 7) m += '-' + d.slice(6,10);
+      e.target.value = m;
+    });
+  }
+
+  // File preview (base64 for email)
+  let selectedFiles = [];
+  const fileInput = document.getElementById('cf-photos');
+  const filePreview = document.getElementById('filePreview');
+
+  fileInput.addEventListener('change', () => {
+    const files = Array.from(fileInput.files).slice(0, 5);
+    selectedFiles = files;
+    filePreview.innerHTML = '';
+    files.forEach(f => {
+      const reader = new FileReader();
+      reader.onload = e => {
+        const img = document.createElement('img');
+        img.src = e.target.result;
+        img.className = 'file-preview-thumb';
+        filePreview.appendChild(img);
+      };
+      reader.readAsDataURL(f);
+    });
+  });
+
+  // Submit
+  document.getElementById('contactForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const btn = document.getElementById('cfSubmitBtn');
+    btn.disabled = true;
+    btn.textContent = 'Sending...';
+
+    // Convert images to base64 data URLs to include in email
+    const photoDataUrls = await Promise.all(selectedFiles.map(f => new Promise(resolve => {
+      const reader = new FileReader();
+      reader.onload = ev => resolve(ev.target.result);
+      reader.readAsDataURL(f);
+    })));
+
+    const payload = {
+      name:         document.getElementById('cf-name').value.trim(),
+      phone:        document.getElementById('cf-phone').value.trim(),
+      email:        document.getElementById('cf-email').value.trim(),
+      project_type: document.getElementById('cf-type').value,
+      message:      document.getElementById('cf-message').value.trim(),
+      photo_urls:   photoDataUrls,
+    };
+
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) throw new Error();
+      document.getElementById('contactFormWrap').style.display = 'none';
+      document.getElementById('contactSuccess').style.display = 'block';
+    } catch {
+      btn.disabled = false;
+      btn.textContent = 'Send Message';
+      alert('Something went wrong — please call us or try again.');
+    }
+  });
+})();
+</script>
 
 </main>
 
