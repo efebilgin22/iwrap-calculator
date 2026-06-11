@@ -556,6 +556,8 @@
   ============================================================ */
   const RATE_LOW = 12.5;
   const RATE_HIGH = 15;
+  const DIM_RATE_LOW = 10;
+  const DIM_RATE_HIGH = 12;
   const WINDOW_RATE_LOW = 8;
   const WINDOW_RATE_HIGH = 10;
   const DESIGN_FEE = 400;
@@ -1139,12 +1141,12 @@
       const uLabel = u === 'in' ? 'in' : 'ft';
       const frontNote = state.dimWrapFront ? '2 sides + front + back' : '2 sides + back only';
       const designFee = state.needsDesign ? DESIGN_FEE : 0;
-      const low  = sqft * RATE_LOW + designFee + logoSvcFee;
-      const high = sqft * RATE_HIGH + designFee + logoSvcFee;
+      const low  = sqft * DIM_RATE_LOW + designFee + logoSvcFee;
+      const high = sqft * DIM_RATE_HIGH + designFee + logoSvcFee;
       const dimStr = `sides ${state.dimSideLength}×${state.dimSideHeight}${uLabel}, rear ${state.dimRearWidth}×${state.dimRearHeight}${uLabel}${state.dimWrapFront ? `, front ${state.dimFrontWidth}×${state.dimFrontHeight}${uLabel}` : ''}`;
       return {
         vehicleLine: `Box Truck / Trailer`,
-        low, high, baseLow: sqft * RATE_LOW, baseHigh: sqft * RATE_HIGH,
+        low, high, baseLow: sqft * DIM_RATE_LOW, baseHigh: sqft * DIM_RATE_HIGH,
         baseLabel: `Box truck wrap (${frontNote})`,
         designFee, logoFee: 0, logoLabel: '', logoSvcFee, logoSvcLabel,
         windowLow: 0, windowHigh: 0, surfaceItems: null,
