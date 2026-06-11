@@ -78,7 +78,7 @@
     white-space: nowrap;
   }
   .nav-link:hover { color: var(--brand); background: rgba(255,255,255,0.04); }
-  @media (max-width: 640px) { .nav-links { display: none; } }
+  @media (max-width: 768px) { .nav-links { display: none; } }
   .nav-logo { height: 56px; width: auto; display: block; }
   .nav-right { display: flex; align-items: center; gap: 1.25rem; }
   .nav-address {
@@ -119,9 +119,7 @@
   }
   .hero-bg-bottom-inner {
     position: absolute; inset: 0;
-    background: url('mosaic.webp') 0 center / auto 100% repeat-x;
-    animation: scrollMosaic 30s linear infinite;
-    will-change: transform;
+    background: url('mosaic.webp') center center / cover no-repeat;
   }
   @keyframes scrollMosaic {
     from { transform: translateX(-2000px); }
@@ -507,7 +505,7 @@
 
   /* ── RESPONSIVE ── */
   @media (max-width: 640px) {
-    .nav { padding: 0.65rem 1rem; }
+    .nav-top { padding: 0.65rem 1rem; }
     .nav-phone { display: flex; font-size: 0.85rem; padding: 0.5rem 0.9rem; }
     .nav-address { display: none; }
     .hero { padding: 3.5rem 1rem 4rem; }
