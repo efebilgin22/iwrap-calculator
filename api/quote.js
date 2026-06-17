@@ -5,7 +5,7 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 const RECIPIENT = 'contactus@iwrapny.com';
 const BRAND_ORANGE = '#f27024';
 const BRAND_DARK = '#0f172a';
-const LOGO_URL = 'https://iwrap-calculator.vercel.app/logo.png';
+const LOGO_URL = 'https://iwrap-calculator.vercel.app/logo.webp';
 
 function parseQuote(quote_summary, quote_breakdown) {
   const summaryParts = quote_summary ? quote_summary.split(' — ') : [];
